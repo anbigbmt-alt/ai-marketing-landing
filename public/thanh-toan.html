@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Thanh Toán Đăng Ký - AI Marketing Thực Chiến</title>
+  <style>
+    :root {
+      --navy: #0f2947;
+      --blue: #1f6feb;
+      --accent: #ff6b35;
+      --accent2: #ff8c42;
+      --gold: #f5b301;
+      --bg: #f6f8fb;
+      --ink: #1b2733;
+      --muted: #5b6b7c;
+      --line: #e3e9f0;
+      --green: #1f9d55;
+      --card-shadow: 0 10px 30px rgba(15, 41, 71, 0.08);
+      --zalo-color: #0068ff;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+    }
+
+    .header {
+      background: radial-gradient(1200px 500px at 50% -10%, #1c3d63, #0f2947);
+      color: #fff;
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #d7e2ef;
+      font-size: 16px;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: -30px auto 60px;
+      padding: 0 20px;
+    }
+
+    /* COUNTDOWN BANNER */
+    .timer-banner {
+      background: #fff7ef;
+      border: 1px solid #ffd9bf;
+      border-left: 5px solid var(--accent);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: var(--card-shadow);
+    }
+
+    .timer-text {
+      font-weight: 600;
+      color: var(--navy);
+      font-size: 15px;
+    }
+
+    .timer-text span {
+      color: var(--accent);
+    }
+
+    .timer-clock {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+      font-family: monospace;
+      background: #fff;
+      padding: 6px 14px;
+      border-radius: 8px;
+      border: 1px solid #ffeede;
+      letter-spacing: 1px;
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    /* MAIN LAYOUT */
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 24px;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: var(--card-shadow);
+    }
+
+    .card-title {
+      font-size: 18px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 20px;
+      border-bottom: 2px solid var(--bg);
+      padding-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    /* DETAILS OF SELECTED PACKAGE */
+    .package-summary {
+      background: var(--bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 24px;
+      border: 1px solid var(--line);
+    }
+
+    .package-name {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .package-price {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .price-promo {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--green);
+    }
+
+    .price-original {
+      font-size: 16px;
+      color: var(--muted);
+      text-decoration: line-through;
+    }
+
+    /* BANK DETAILS TABLE */
+    .bank-info-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    .bank-info-table td {
+      padding: 12px 0;
+      border-bottom: 1px solid var(--bg);
+      vertical-align: middle;
+    }
+
+    .bank-info-table td.label {
+      color: var(--muted);
+      font-size: 14px;
+      width: 35%;
+    }
+
+    .bank-info-table td.value {
+      font-weight: 700;
+      color: var(--navy);
+      font-size: 15px;
+      text-align: right;
+    }
+
+    .copy-btn {
+      background: var(--bg);
+      border: 1px solid var(--line);
+      color: var(--blue);
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-left: 8px;
+      transition: all 0.15s;
+    }
+
+    .copy-btn:hover {
+      background: var(--blue);
+      color: #fff;
+      border-color: var(--blue);
+    }
+
+    /* QR CODE COL */
+    .qr-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .qr-box {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 16px;
+      background: #fff;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+      margin-bottom: 16px;
+      max-width: 240px;
+    }
+
+    .qr-box img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .qr-desc {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.4;
+    }
+
+    .qr-desc b {
+      color: var(--navy);
+    }
+
+    /* CONFIRM ACTION */
+    .actions-card {
+      grid-column: 1 / -1;
+      text-align: center;
+      background: linear-gradient(135deg, #fff, #fcfdfe);
+    }
+
+    .guide-text {
+      max-width: 650px;
+      margin: 0 auto 20px;
+      font-size: 15px;
+      color: var(--muted);
+    }
+
+    .guide-text b {
+      color: var(--navy);
+    }
+
+    .zalo-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: var(--zalo-color);
+      color: #fff;
+      font-weight: 800;
+      padding: 16px 36px;
+      border-radius: 50px;
+      text-decoration: none;
+      font-size: 18px;
+      box-shadow: 0 8px 20px rgba(0, 104, 255, 0.3);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+
+    .zalo-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(0, 104, 255, 0.4);
+    }
+
+    .zalo-icon {
+      width: 24px;
+      height: 24px;
+      background: #fff;
+      color: var(--zalo-color);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      font-weight: 900;
+    }
+
+    /* TESTIMONIAL / TRUST */
+    .support-info {
+      text-align: center;
+      margin-top: 30px;
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .support-info a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    /* Toast notification */
+    .toast {
+      position: fixed;
+      bottom: 30px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: var(--navy);
+      color: #fff;
+      padding: 12px 24px;
+      border-radius: 50px;
+      font-size: 14px;
+      font-weight: 600;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      opacity: 0;
+      z-index: 999;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 768px) {
+      .grid {
+        grid-template-columns: 1fr;
+      }
+      .timer-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+      }
+      .header h1 {
+        font-size: 24px;
+      }
+      .price-promo {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="toast">Đã sao chép vào bộ nhớ tạm!</div>
+
+  <header class="header">
+    <div class="wrap">
+      <p>Học viện AI Marketing</p>
+      <h1>XÁC NHẬN ĐĂNG KÝ HỌC</h1>
+      <p>Chỉ còn một bước cuối cùng để kích hoạt tài khoản của bạn</p>
+    </div>
+  </header>
+
+  <main class="container">
+    
+    <!-- COUNTDOWN BANNER -->
+    <div class="timer-banner">
+      <div class="timer-text">
+        ⚠️ <span>CƠ HỘI CUỐI CÙNG:</span> Ưu đãi giảm giá 50% &amp; quà tặng kèm theo sẽ được đóng lại sau:
+      </div>
+      <div class="timer-clock" id="countdown-clock">12:00:00</div>
+    </div>
+
+    <!-- MAIN WORKSPACE -->
+    <div class="grid">
+      
+      <!-- COLUMN 1: TRANSFER INFO -->
+      <div class="card">
+        <div class="card-title">
+          <span>💳</span> Thông tin chuyển khoản
+        </div>
+
+        <div class="package-summary">
+          <div class="package-name" id="pkg-title">Đang tải gói học phí...</div>
+          <div class="package-price">
+            <span class="price-promo" id="pkg-price-promo">0đ</span>
+            <span class="price-original" id="pkg-price-orig">0đ</span>
+          </div>
+        </div>
+
+        <!-- BANK DETAILS -->
+        <!-- THAY ĐỔI THÔNG TIN NGÂN HÀNG CỦA BẠN TẠI ĐÂY -->
+        <table class="bank-info-table">
+          <tr>
+            <td class="label">Ngân hàng</td>
+            <td class="value">
+              <span id="bank-name">MB Bank (Ngân hàng Quân Đội)</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">Số tài khoản</td>
+            <td class="value">
+              <span id="bank-acct">0905184871</span>
+              <button class="copy-btn" onclick="copyText('bank-acct')">Sao chép</button>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">Chủ tài khoản</td>
+            <td class="value">
+              <span id="bank-holder">VO AN</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">Số tiền chuyển</td>
+            <td class="value">
+              <span id="transfer-amount">0đ</span>
+              <button class="copy-btn" onclick="copyText('transfer-amount-raw')">Sao chép</button>
+              <span id="transfer-amount-raw" style="display:none">0</span>
+            </td>
+          </tr>
+          <tr>
+            <td class="label">Nội dung chuyển tiền</td>
+            <td class="value">
+              <span id="transfer-memo" style="color: var(--accent);">AIMARKETING TIEUCHUAN</span>
+              <button class="copy-btn" onclick="copyText('transfer-memo')">Sao chép</button>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+      <!-- COLUMN 2: QR CODE -->
+      <div class="card qr-card">
+        <div class="card-title" style="width:100%">
+          <span>📲</span> Quét mã VietQR
+        </div>
+        <div class="qr-box">
+          <img id="vietqr-img" src="" alt="Mã QR chuyển khoản thanh toán">
+        </div>
+        <div class="qr-desc">
+          Mở ứng dụng Mobile Banking của bạn, chọn tính năng <b>Quét mã QR</b> để quét ảnh trên. 
+          Hệ thống sẽ tự động điền <b>Đúng Số tiền</b> &amp; <b>Đúng Nội dung</b>.
+        </div>
+      </div>
+
+      <!-- ACTIONS: CONFIRMATION -->
+      <div class="card actions-card">
+        <div class="card-title" style="justify-content: center;">
+          <span>✅</span> Xác nhận giao dịch
+        </div>
+        <div class="guide-text">
+          Sau khi chuyển khoản thành công, quý khách vui lòng chụp màn hình biên lai giao dịch và nhấn vào nút bên dưới để gửi xác nhận cho mentor <b>Võ An</b> qua Zalo để kích hoạt tài khoản ngay.
+        </div>
+        <a id="zalo-link" href="https://zalo.me/0905184871" target="_blank" class="zalo-btn">
+          <span class="zalo-icon">Z</span>
+          XÁC NHẬN QUA ZALO: 0905184871
+        </a>
+      </div>
+
+    </div>
+
+    <!-- SUPPORT -->
+    <div class="support-info">
+      Bạn gặp khó khăn trong quá trình thanh toán? Gọi ngay Hotline Zalo hỗ trợ: <a href="tel:0905184871">0905184871</a> (Võ An)
+    </div>
+
+  </main>
+
+  <script>
+    // 1. DYNAMIC CONFIGURATION BASED ON URL PARAMS
+    const urlParams = new URLSearchParams(window.location.search);
+    const selectedGoi = urlParams.get('goi') || 'tieu-chuan'; // default
+
+    const packages = {
+      'co-ban': {
+        title: 'Khóa học AI Marketing - Gói Cơ bản',
+        promoPrice: 1500000,
+        origPrice: 3000000,
+        memo: 'AIMAR COBAN'
+      },
+      'tieu-chuan': {
+        title: 'Khóa học AI Marketing - Gói Tiêu chuẩn',
+        promoPrice: 3500000,
+        origPrice: 7000000,
+        memo: 'AIMAR TIEUCHUAN'
+      },
+      'cao-cap': {
+        title: 'Khóa học AI Marketing - Gói Cao cấp 1 kèm 1',
+        promoPrice: 7500000,
+        origPrice: 15000000,
+        memo: 'AIMAR CAOCAP'
+      }
+    };
+
+    const config = packages[selectedGoi] || packages['tieu-chuan'];
+
+    // Update Text Elements
+    document.getElementById('pkg-title').textContent = config.title;
+    document.getElementById('pkg-price-promo').textContent = formatCurrency(config.promoPrice);
+    document.getElementById('pkg-price-orig').textContent = formatCurrency(config.origPrice);
+    document.getElementById('transfer-amount').textContent = formatCurrency(config.promoPrice);
+    document.getElementById('transfer-amount-raw').textContent = config.promoPrice;
+    
+    // Auto-generate transaction ID from time prefix to ensure uniqueness and simplify tracking
+    const randomSuffix = Math.floor(100 + Math.random() * 900); // 3 digits
+    const uniqueMemo = `${config.memo} ${randomSuffix}`;
+    document.getElementById('transfer-memo').textContent = uniqueMemo;
+
+    // 2. DYNAMIC VIETQR GENERATION
+    // Bank config variables
+    const bankId = 'MB'; // MB Bank
+    const accountNo = '0905184871'; // Your account number
+    const accountName = 'VO AN'; // Your account name
+
+    // VietQR API endpoint format:
+    // https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-compact2.jpg?amount=<AMOUNT>&addInfo=<MEMO>&accountName=<ACCOUNT_NAME>
+    const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.jpg?amount=${config.promoPrice}&addInfo=${encodeURIComponent(uniqueMemo)}&accountName=${encodeURIComponent(accountName)}`;
+    document.getElementById('vietqr-img').src = qrUrl;
+
+    // 3. PERSISTENT COUNTDOWN TIMER (12 HOURS)
+    const COUNTDOWN_DURATION = 12 * 60 * 60 * 1000; // 12 hours in ms
+    let endTime = localStorage.getItem('countdown_end_time');
+
+    if (!endTime) {
+      endTime = Date.now() + COUNTDOWN_DURATION;
+      localStorage.setItem('countdown_end_time', endTime);
+    } else {
+      endTime = parseInt(endTime, 10);
+      // If the stored time is already expired, we can reset a new 12h timer
+      // or keep it at 0. Typically for landing pages we reset it for the visitor.
+      if (Date.now() > endTime) {
+        endTime = Date.now() + COUNTDOWN_DURATION;
+        localStorage.setItem('countdown_end_time', endTime);
+      }
+    }
+
+    function updateClock() {
+      const remaining = endTime - Date.now();
+      if (remaining <= 0) {
+        document.getElementById('countdown-clock').textContent = '00:00:00';
+        document.querySelector('.timer-text').innerHTML = '⚠️ <span>ƯU ĐÃI ĐÃ HẾT HẠN!</span> Hãy đăng ký ngay để tránh tăng giá.';
+        clearInterval(timerInterval);
+        return;
+      }
+
+      const hours = Math.floor(remaining / (1000 * 60 * 60));
+      const minutes = Math.floor((remaining % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((remaining % (1000 * 60)) / 1000);
+
+      const displayHours = String(hours).padStart(2, '0');
+      const displayMinutes = String(minutes).padStart(2, '0');
+      const displaySeconds = String(seconds).padStart(2, '0');
+
+      document.getElementById('countdown-clock').textContent = `${displayHours}:${displayMinutes}:${displaySeconds}`;
+    }
+
+    updateClock();
+    const timerInterval = setInterval(updateClock, 1000);
+
+    // 4. HELPER UTILS
+    function formatCurrency(amount) {
+      return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
+    }
+
+    function copyText(elementId) {
+      const textToCopy = document.getElementById(elementId).innerText || document.getElementById(elementId).textContent;
+      navigator.clipboard.writeText(textToCopy.trim()).then(() => {
+        showToast();
+      }).catch(err => {
+        console.error('Không thể sao chép văn bản: ', err);
+      });
+    }
+
+    function showToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.add('show');
+      setTimeout(() => {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    // Set Zalo button dynamic link message query
+    const zaloBtn = document.getElementById('zalo-link');
+    zaloBtn.addEventListener('click', function(e) {
+      // Add custom message prompt in clipboard for convenience if supported
+      const message = `Chào anh Võ An, tôi đã chuyển khoản ${formatCurrency(config.promoPrice)} đăng ký ${config.title}. Mã giao dịch: ${uniqueMemo}. Nhờ anh kích hoạt khóa học giúp tôi!`;
+      navigator.clipboard.writeText(message).catch(() => {});
+    });
+  </script>
+</body>
+</html>

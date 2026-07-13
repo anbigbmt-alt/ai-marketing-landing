@@ -1,0 +1,16 @@
+{
+  "name": "ai-marketing-course",
+  "version": "1.0.0",
+  "description": "Khoá học AI Marketing Thực Chiến cho Chủ Shop & SME",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,676 @@
+<!--
+  SALES PAGE — AI MARKETING THỰC CHIẾN CHO CHỦ SHOP & SME
+  GHI CHÚ CHO NGƯỜI DÙNG:
+  - Các review/case study bên dưới là VÍ DỤ MẪU. Hãy thay bằng review THẬT của học viên bạn (tên, ảnh, kết quả thật) trước khi chạy quảng cáo.
+  - Thay [SỐ ĐIỆN THOẠI], [LINK ĐĂNG KÝ], [TÊN BẠN] bằng thông tin thật.
+  - Con số giá là gợi ý — chỉnh theo chiến lược của bạn.
+-->
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Marketing Thực Chiến cho Chủ Shop & SME</title>
+<style>
+  :root{
+    --navy:#0f2947; --blue:#1f6feb; --accent:#ff6b35; --accent2:#ff8c42;
+    --gold:#f5b301; --bg:#f6f8fb; --ink:#1b2733; --muted:#5b6b7c; --line:#e3e9f0;
+    --green:#1f9d55;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);line-height:1.6}
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px}
+  section{padding:64px 0}
+  h1,h2,h3{line-height:1.25;color:var(--navy)}
+  h2{font-size:30px;margin-bottom:8px;text-align:center}
+  .sub{text-align:center;color:var(--muted);max-width:620px;margin:0 auto 36px}
+  .btn{display:inline-block;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-weight:800;
+    padding:18px 40px;border-radius:50px;text-decoration:none;font-size:19px;box-shadow:0 10px 24px rgba(255,107,53,.35);
+    transition:transform .15s;letter-spacing:.2px}
+  .btn:hover{transform:translateY(-2px)}
+  .btn-wrap{text-align:center;margin-top:28px}
+  .micro{font-size:13px;color:var(--muted);margin-top:12px}
+
+  /* HERO */
+  .hero{background:radial-gradient(1200px 500px at 50% -10%,#1c3d63,#0f2947);color:#fff;padding:80px 0 70px}
+  .hero .wrap{max-width:1020px;display:grid;grid-template-columns:1.2fr 0.8fr;gap:40px;align-items:center;text-align:left}
+  .hero-text{display:flex;flex-direction:column;align-items:flex-start}
+  .hero-img-wrap{display:flex;justify-content:center;align-items:center}
+  .hero-img{width:100%;max-width:340px;border-radius:24px;border:3px solid rgba(255,255,255,0.15);box-shadow:0 20px 40px rgba(0,0,0,0.3);object-fit:cover;aspect-ratio:4/5}
+  .pill{display:inline-block;background:rgba(245,179,1,.18);color:var(--gold);border:1px solid rgba(245,179,1,.5);
+    padding:7px 16px;border-radius:50px;font-size:13px;font-weight:700;margin-bottom:22px;letter-spacing:.4px}
+  .hero h1{color:#fff;font-size:44px;font-weight:900;letter-spacing:-.5px}
+  .hero h1 .hl{color:var(--gold)}
+  .hero p.lead{font-size:20px;color:#d7e2ef;margin:22px auto 8px;max-width:680px}
+  .hero .btn{margin-top:26px}
+  .trust{margin-top:22px;color:#9db4cc;font-size:14px}
+
+  /* PROBLEM */
+  .pains{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:12px}
+  .pain{background:#fff;border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:18px 20px}
+  .pain b{color:var(--navy)}
+  .agitate{text-align:center;font-size:19px;color:var(--navy);font-weight:700;max-width:680px;margin:30px auto 0}
+
+  /* SOLUTION */
+  .sol{background:#fff}
+  .sol-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+  .sol-card{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--bg)}
+  .sol-card .ico{font-size:26px}
+  .sol-card h3{font-size:18px;margin:8px 0 4px}
+  .sol-card p{color:var(--muted);font-size:15px}
+
+  /* OUTCOMES */
+  .out{background:linear-gradient(135deg,#0f2947,#1c3d63);color:#fff}
+  .out h2{color:#fff}
+  .out .sub{color:#c6d4e6}
+  .out-list{max-width:720px;margin:0 auto;display:grid;gap:12px}
+  .out-item{display:flex;gap:12px;align-items:flex-start;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+    padding:14px 18px;border-radius:12px}
+  .out-item .ck{color:var(--gold);font-weight:900;font-size:18px}
+
+  /* MODULES */
+  .mod{border:1px solid var(--line);border-radius:14px;margin-bottom:12px;background:#fff;overflow:hidden}
+  .mod-h{display:flex;gap:14px;align-items:center;padding:16px 20px;cursor:pointer;font-weight:700;color:var(--navy)}
+  .mod-h .n{background:var(--blue);color:#fff;width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;flex:0 0 34px}
+  .mod-h .t{flex:1;font-size:17px}
+  .mod-h .cx{color:var(--muted);font-size:20px}
+  .mod-b{padding:0 20px 18px 68px;color:var(--muted);font-size:15px;display:none}
+  .mod.open .mod-b{display:block}
+  .mod.open .cx{transform:rotate(45deg)}
+
+  /* CASE STUDY */
+  .cases{background:#fff}
+  .case-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+  .case{border:1px solid var(--line);border-radius:14px;padding:22px;background:var(--bg)}
+  .stars{color:var(--gold);font-size:16px}
+  .case p{font-size:15px;color:var(--ink);margin:10px 0}
+  .who{display:flex;align-items:center;gap:12px;margin-top:14px}
+  .av{width:44px;height:44px;border-radius:50%;object-fit:cover;border:1px solid rgba(0,0,0,0.08);flex-shrink:0}
+  .who b{color:var(--navy)} .who span{color:var(--muted);font-size:13px;display:block}
+  .feat{grid-column:1/-1;background:linear-gradient(135deg,#fff7ef,#ffeede);border:1px solid #ffd9bf}
+
+  /* PRICING */
+  .price{background:var(--bg)}
+  .tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:24px;align-items:stretch}
+  .tier{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px 22px;display:flex;flex-direction:column;text-align:center}
+  .tier.best{border:2px solid var(--accent);box-shadow:0 14px 34px rgba(255,107,53,.18);position:relative;transform:translateY(-6px)}
+  .tier.best .tag{position:absolute;top:-13px;left:50%;transform:translateX(-50%);background:var(--accent);color:#fff;
+    font-size:12px;font-weight:800;padding:5px 16px;border-radius:50px;letter-spacing:.5px}
+  .tier h3{font-size:19px}
+  .tier .amt{font-size:32px;font-weight:900;color:var(--navy);margin:10px 0 2px}
+  .tier .amt small{font-size:15px;color:var(--muted);font-weight:600}
+  .tier ul{list-style:none;text-align:left;margin:16px 0 22px;display:grid;gap:9px}
+  .tier ul li{font-size:14px;color:var(--ink);padding-left:24px;position:relative}
+  .tier ul li:before{content:"✓";position:absolute;left:0;color:var(--green);font-weight:900}
+  .tier .btn{padding:14px 20px;font-size:16px;margin-top:auto}
+  .tier.best .btn{background:linear-gradient(135deg,var(--accent),var(--accent2))}
+  .tier.plain .btn{background:var(--navy);box-shadow:none}
+
+  /* GUARANTEE */
+  .guar{background:#fff}
+  .guar-box{max-width:720px;margin:0 auto;border:2px dashed var(--green);border-radius:18px;padding:34px;text-align:center;background:#f2fbf5}
+  .guar-box .badge{font-size:46px}
+  .guar-box h2{color:var(--green)}
+
+  /* FAQ */
+  .faq-item{background:#fff;border:1px solid var(--line);border-radius:12px;margin-bottom:10px;overflow:hidden}
+  .faq-q{padding:16px 20px;font-weight:700;color:var(--navy);cursor:pointer;display:flex;justify-content:space-between;gap:10px}
+  .faq-a{padding:0 20px 16px;color:var(--muted);display:none}
+  .faq-item.open .faq-a{display:block}
+  .faq-item.open .faq-q .cx{transform:rotate(45deg)}
+  .faq-q .cx{color:var(--accent);font-size:20px;transition:transform .2s}
+
+  /* FINAL */
+  .final{background:linear-gradient(135deg,#0f2947,#1c3d63);color:#fff;text-align:center}
+  .final h2{color:#fff;font-size:32px}
+  .final p{color:#cdd9e8;max-width:620px;margin:14px auto 0}
+  .urg{display:inline-block;margin-top:18px;background:rgba(245,179,1,.15);border:1px solid rgba(245,179,1,.5);color:var(--gold);
+    padding:8px 18px;border-radius:50px;font-weight:700;font-size:14px}
+  footer{background:#0b1f38;color:#7d93ab;text-align:center;padding:26px 20px;font-size:13px}
+
+  @media(max-width:720px){
+    .hero h1{font-size:32px}
+    .hero .wrap{grid-template-columns:1fr;text-align:center;gap:30px}
+    .hero-text{align-items:center}
+    .hero-img{max-width:260px}
+    .pains,.sol-grid,.case-grid,.tiers,.out-list{grid-template-columns:1fr}
+    .tier.best{transform:none}
+    h2{font-size:25px}
+    section{padding:48px 0}
+  }
+
+  /* CUSTOM FORM STYLING */
+  .form-group input[type="text"]:focus,
+  .form-group input[type="tel"]:focus {
+    border-color: var(--blue) !important;
+    box-shadow: 0 0 0 4px rgba(31,111,235,0.15);
+  }
+  .option-card {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 14px 18px;
+    cursor: pointer;
+    font-weight: 600;
+    color: var(--navy);
+    font-size: 14px;
+    transition: all 0.2s ease;
+    user-select: none;
+  }
+  .option-card:hover {
+    border-color: var(--blue);
+    background: rgba(31,111,235,0.02);
+  }
+  .option-card input[type="radio"],
+  .option-card input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--blue);
+    cursor: pointer;
+  }
+  .option-card.long {
+    font-size: 15px;
+    padding: 16px 20px;
+  }
+  .option-card:has(input:checked) {
+    border-color: var(--blue);
+    background: rgba(31,111,235,0.06);
+    box-shadow: 0 4px 12px rgba(31,111,235,0.05);
+  }
+  @keyframes scaleUp {
+    from { transform: scale(0.9); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+</style>
+
+<!-- ============ HERO ============ -->
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-text">
+      <span class="pill">DÀNH CHO CHỦ SHOP & SME — KHÔNG CẦN BIẾT CÔNG NGHỆ</span>
+      <h1>Biến <span class="hl">AI</span> thành cả một <span class="hl">đội marketing</span> làm việc cho shop của bạn — dù bạn bắt đầu từ con số 0</h1>
+      <p class="lead">Tự viết content ra đơn, tự làm hình &amp; video, tự chạy quảng cáo và chốt đơn tự động — mỗi ngày chỉ tốn dưới 30 phút, chi phí gần như bằng 0.</p>
+      <a href="#dangky" class="btn">👉 ĐĂNG KÝ NGAY HÔM NAY</a>
+      <div class="trust">⭐ Lộ trình cầm tay chỉ việc · Học tới đâu, shop chạy tới đó · Hỗ trợ trọn đời</div>
+    </div>
+    <div class="hero-img-wrap">
+      <img src="vo-an.jpg" alt="Giảng viên Võ An" class="hero-img">
+    </div>
+  </div>
+</header>
+
+<!-- ============ PROBLEM ============ -->
+<section>
+  <div class="wrap">
+    <h2>Bạn có đang mắc kẹt ở đây không?</h2>
+    <p class="sub">Nếu bạn gật đầu với 2 trong số này, khóa học này được tạo ra chính xác cho bạn.</p>
+    <div class="pains">
+      <div class="pain"><b>😵 “Không biết đăng gì”</b> — mỗi sáng mở điện thoại lên là bí ý tưởng, đăng bữa được bữa mất.</div>
+      <div class="pain"><b>💸 Đốt tiền quảng cáo</b> — chạy ads mà chẳng ra đơn, tắt thì tiếc, để thì lỗ.</div>
+      <div class="pain"><b>📸 Tốn tiền thuê thiết kế</b> — mỗi cái ảnh, cái video đều phải chờ và trả phí.</div>
+      <div class="pain"><b>📩 Sót tin nhắn khách</b> — khách hỏi lúc nửa đêm không ai trả lời, sáng ra mất đơn.</div>
+      <div class="pain"><b>🤯 Nghe AI mà sợ</b> — biết AI đang “hot” nhưng thấy phức tạp, không biết bắt đầu từ đâu.</div>
+      <div class="pain"><b>⏰ Làm một mình, kiệt sức</b> — vừa bán vừa làm marketing, quay như chong chóng vẫn không xuể.</div>
+    </div>
+    <p class="agitate">Vấn đề không phải bạn thiếu cố gắng. Vấn đề là bạn đang làm mọi thứ bằng tay — trong khi đối thủ đã bắt đầu để AI làm hộ.</p>
+  </div>
+</section>
+
+<!-- ============ SOLUTION ============ -->
+<section class="sol">
+  <div class="wrap">
+    <h2>Giải pháp: Một hệ thống, không phải mớ mẹo lặt vặt</h2>
+    <p class="sub">Khóa học không dạy lý thuyết AI hàn lâm. Mỗi bài = một việc bạn áp dụng ngay vào shop. Học xong, bạn có sẵn một cỗ máy marketing chạy được.</p>
+    <div class="sol-grid">
+      <div class="sol-card"><div class="ico">✍️</div><h3>Content ra đơn tự động</h3><p>Thư viện 50 prompt + công thức viết bán hàng. Bí ý tưởng trở thành chuyện của quá khứ.</p></div>
+      <div class="sol-card"><div class="ico">🎨</div><h3>Hình &amp; video không cần designer</h3><p>Tự tạo ảnh sản phẩm như studio và video không cần lộ mặt — bằng AI, gần như miễn phí.</p></div>
+      <div class="sol-card"><div class="ico">🎯</div><h3>Quảng cáo không đốt tiền</h3><p>Tạo nhiều mẫu để test, đọc số liệu bằng AI, dồn tiền vào cái ra đơn.</p></div>
+      <div class="sol-card"><div class="ico">🤖</div><h3>Chốt đơn &amp; chăm sóc 24/7</h3><p>Kịch bản chốt đơn + chatbot trực đêm, không để tuột một khách nào.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ OUTCOMES ============ -->
+<section class="out">
+  <div class="wrap">
+    <h2>Sau khóa học, bạn rời đi với những thứ này TRONG TAY</h2>
+    <p class="sub">Không phải một mớ kiến thức. Là những tài sản dùng được ngay cho shop của bạn.</p>
+    <div class="out-list">
+      <div class="out-item"><span class="ck">✔</span><div>Hồ sơ thương hiệu + chân dung khách hàng rõ ràng</div></div>
+      <div class="out-item"><span class="ck">✔</span><div>Thư viện 50+ prompt thực chiến riêng cho ngành của bạn</div></div>
+      <div class="out-item"><span class="ck">✔</span><div>Lịch nội dung 30 ngày + 30 bài content mẫu</div></div>
+      <div class="out-item"><span class="ck">✔</span><div>20+ hình ảnh &amp; 3–5 video sản phẩm tự tạo</div></div>
+      <div class="out-item"><span class="ck">✔</span><div>Kịch bản chốt đơn + 1 chatbot đã cài đặt chạy được</div></div>
+      <div class="out-item"><span class="ck">✔</span><div>Dashboard đo lường + kế hoạch marketing 90 ngày</div></div>
+    </div>
+    <div class="btn-wrap"><a href="#dangky" class="btn">Tôi muốn có bộ tài sản này 🚀</a></div>
+  </div>
+</section>
+
+<!-- ============ CONTENT / MODULES ============ -->
+<section>
+  <div class="wrap">
+    <h2>Bên trong khóa học có gì?</h2>
+    <p class="sub">8 module đi từ nền móng đến hệ thống tự vận hành. Nhấn vào từng module để xem chi tiết.</p>
+
+    <div class="mod open"><div class="mod-h"><span class="n">0</span><span class="t">Khởi động: Tư duy &amp; Bộ công cụ AI</span><span class="cx">+</span></div>
+      <div class="mod-b">Bỏ nỗi sợ AI, cài đúng bộ công cụ và làm chủ công thức prompt 4 phần — chìa khóa để AI làm ra “vàng” thay vì “rác”.</div></div>
+
+    <div class="mod"><div class="mod-h"><span class="n">1</span><span class="t">Nền tảng: Hiểu khách hàng &amp; Định vị bằng AI</span><span class="cx">+</span></div>
+      <div class="mod-b">Dùng AI dựng chân dung khách, tìm nỗi đau, chốt USP, xây giọng thương hiệu và tìm khoảng trống đối thủ bỏ lỡ.</div></div>
+
+    <div class="mod"><div class="mod-h"><span class="n">2</span><span class="t">Content bán hàng bằng AI</span><span class="cx">+</span></div>
+      <div class="mod-b">6 dạng bài ra đơn, công thức AIDA/PAS, biến 1 ý tưởng thành 10 bài, lịch 30 ngày và quy trình dưới 30 phút/ngày.</div></div>
+
+    <div class="mod"><div class="mod-h"><span class="n">3</span><span class="t">Hình ảnh &amp; Video sản phẩm bằng AI</span><span class="cx">+</span></div>
+      <div class="mod-b">Tạo ảnh như studio, ấn phẩm Canva trong 10 phút, và video không cần lộ mặt với giọng đọc + phụ đề tự động.</div></div>
+
+    <div class="mod"><div class="mod-h"><span class="n">4</span><span class="t">Phân phối &amp; Quảng cáo có AI hỗ trợ</span><span class="cx">+</span></div>
+      <div class="mod-b">Chọn đúng kênh, tạo nhiều mẫu quảng cáo để test, thiết lập chiến dịch từ A–Z và đọc số liệu bằng AI để tối ưu.</div></div>
+
+    <div class="mod"><div class="mod-h"><span class="n">5</span><span class="t">Bán hàng &amp; Chăm sóc tự động</span><span class="cx">+</span></div>
+      <div class="mod-b">Kịch bản chốt đơn 6 bước, thư viện xử lý từ chối, chatbot 24/7 và chuỗi chăm sóc sau bán để khách quay lại.</div></div>
+
+    <div class="mod"><div class="mod-h"><span class="n">6</span><span class="t">Đo lường &amp; Tối ưu</span><span class="cx">+</span></div>
+      <div class="mod-b">Phân biệt chỉ số ảo và chỉ số thật, dựng dashboard, ra quyết định bằng AI và vòng lặp Thử–Đo–Nhân bản mỗi tuần.</div></div>
+
+    <div class="mod"><div class="mod-h"><span class="n">7</span><span class="t">BONUS — Hệ thống hóa &amp; Scale</span><span class="cx">+</span></div>
+      <div class="mod-b">Viết SOP giao việc, tạo luồng tự động, lập kế hoạch 90 ngày và cơ chế tự cập nhật công cụ AI mới.</div></div>
+
+    <div class="btn-wrap"><a href="#dangky" class="btn">Xem bảng giá &amp; đăng ký 👇</a></div>
+  </div>
+</section>
+
+<!-- ============ CASE STUDY ============ -->
+<section class="cases">
+  <div class="wrap">
+    <h2>Học viên nói gì?</h2>
+    <p class="sub">Những kết quả thật từ những người từng “sợ AI” như bạn.</p>
+    <div class="case-grid">
+
+      <div class="case feat">
+        <div class="stars">★★★★★</div>
+        <p><b>“Từ 2 tiếng mỗi ngày xuống còn 25 phút — mà đơn lại nhiều hơn.”</b> Trước đây mình vừa bán vừa vắt óc nghĩ bài, kiệt sức. Sau khóa, mình có lịch 30 ngày và thư viện prompt, sáng nào cũng biết đăng gì. Thời gian dư ra mình dồn chăm khách, đơn tăng rõ.</p>
+        <div class="who"><img class="av" src="av-huyen.png" alt="Chị Huyền"><div><b>Chị Huyền</b><span>Chủ shop thời trang online</span></div></div>
+      </div>
+
+      <div class="case">
+        <div class="stars">★★★★★</div>
+        <p>“Mình chưa từng dám lên hình. Nhờ phần video AI không cần lộ mặt, kênh của mình cuối cùng cũng có video đều đặn — tiếp cận tốt hơn hẳn hồi chỉ đăng ảnh.”</p>
+        <div class="who"><img class="av" src="av-minh.png" alt="Anh Minh"><div><b>Anh Minh</b><span>Tiệm đồ ăn vặt</span></div></div>
+      </div>
+
+      <div class="case">
+        <div class="stars">★★★★★</div>
+        <p>“Chatbot cài theo bài giảng gom đơn cho mình cả lúc đang ngủ. Sáng dậy chỉ việc xác nhận. Doanh thu ‘ngoài giờ’ không còn rơi rụng nữa.”</p>
+        <div class="who"><img class="av" src="https://images.unsplash.com/photo-1548142813-c348350df52b?w=120&auto=format&fit=crop&q=80" alt="Chị Trang"><div><b>Chị Trang</b><span>Spa &amp; mỹ phẩm</span></div></div>
+      </div>
+
+      <div class="case">
+        <div class="stars">★★★★★</div>
+        <p>“Mình từng đốt tiền quảng cáo mù mờ. Giờ mình tạo 4 mẫu để test, dùng AI đọc số rồi tắt cái tốn kém — chi phí mỗi đơn giảm hẳn mà không tốn thêm đồng nào.”</p>
+        <div class="who"><img class="av" src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80" alt="Anh Đức"><div><b>Anh Đức</b><span>Chủ tiệm bánh</span></div></div>
+      </div>
+
+    </div>
+    <p class="micro" style="text-align:center">*Kết quả có thể khác nhau tùy nỗ lực và ngành hàng của mỗi người.</p>
+  </div>
+</section>
+
+<!-- ============ PRICING ============ -->
+<section class="price" id="dangky">
+  <div class="wrap">
+    <h2>Chọn gói phù hợp với bạn</h2>
+    <p class="sub">Đầu tư một lần cho kỹ năng dùng được mãi mãi — rẻ hơn nhiều so với một tháng thuê người làm content.</p>
+    <div class="tiers">
+
+      <div class="tier plain">
+        <h3>Cơ bản</h3>
+        <div class="amt">1.500.000đ</div>
+        <ul>
+          <li>Trọn bộ video 8 module</li>
+          <li>Toàn bộ template &amp; workbook</li>
+          <li>Thư viện 50 prompt</li>
+          <li>Học linh hoạt, trọn đời</li>
+        </ul>
+        <a href="thanh-toan.html?goi=co-ban" class="btn">Chọn gói Cơ bản</a>
+      </div>
+
+      <div class="tier best">
+        <span class="tag">PHỔ BIẾN NHẤT</span>
+        <h3>Tiêu chuẩn</h3>
+        <div class="amt">3.500.000đ</div>
+        <ul>
+          <li>Tất cả quyền lợi gói Cơ bản</li>
+          <li>Live Q&amp;A hàng tuần</li>
+          <li>Cộng đồng học viên hỗ trợ</li>
+          <li>Bản cập nhật công cụ AI mới</li>
+          <li>Chứng nhận hoàn thành</li>
+        </ul>
+        <a href="thanh-toan.html?goi=tieu-chuan" class="btn">Đăng ký gói Tiêu chuẩn</a>
+      </div>
+
+      <div class="tier plain">
+        <h3>Cao cấp 1&nbsp;kèm&nbsp;1</h3>
+        <div class="amt">7.500.000đ</div>
+        <ul>
+          <li>Tất cả quyền lợi gói Tiêu chuẩn</li>
+          <li>Mentor review shop 1-1</li>
+          <li>Chỉnh sửa trực tiếp bài của bạn</li>
+          <li>Ưu tiên hỗ trợ</li>
+          <li>Số lượng có hạn</li>
+        </ul>
+        <a href="thanh-toan.html?goi=cao-cap" class="btn">Nhận kèm cặp 1-1</a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ REGISTRATION FORM ============ -->
+<section id="dangky-form" style="background: var(--bg); padding: 80px 0;">
+  <div class="wrap" style="max-width: 780px;">
+    <div style="text-align: center; margin-bottom: 40px;">
+      <span class="pill" style="background: rgba(31,111,235,0.1); color: var(--blue); border: 1px solid rgba(31,111,235,0.2);">ĐĂNG KÝ HỌC &amp; TƯ VẤN</span>
+      <h2 style="margin-top: 10px; font-size: 32px; font-weight: 800;">Đăng Ký Tư Vấn &amp; Giữ Chỗ Ưu Đãi</h2>
+      <p class="sub" style="margin-bottom: 0;">Điền thông tin bên dưới để đăng ký nhanh, tôi sẽ liên hệ hỗ trợ bạn trực tiếp qua Zalo/SĐT trong vòng 15 phút.</p>
+    </div>
+
+    <form id="customForm" style="background: #fff; border: 1px solid var(--line); border-radius: 24px; padding: 40px; box-shadow: var(--card-shadow); display: flex; flex-direction: column; gap: 28px;">
+      
+      <!-- Họ và tên -->
+      <div class="form-group">
+        <label for="txtName" style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 8px; font-size: 15px;">1. Họ và tên của bạn là gì? <span style="color: var(--accent);">*</span></label>
+        <input type="text" id="txtName" name="entry.623293007" required placeholder="Nhập họ tên của bạn..." style="width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid var(--line); font-size: 15px; outline: none; transition: border-color 0.2s;">
+      </div>
+
+      <!-- Số điện thoại -->
+      <div class="form-group">
+        <label for="txtPhone" style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 8px; font-size: 15px;">2. Số điện thoại / Zalo để liên hệ tư vấn? <span style="color: var(--accent);">*</span></label>
+        <input type="tel" id="txtPhone" name="entry.755693769" required placeholder="Nhập số điện thoại Zalo..." style="width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid var(--line); font-size: 15px; outline: none; transition: border-color 0.2s;">
+      </div>
+
+      <!-- Bạn đang kinh doanh gì -->
+      <div class="form-group">
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">3. Bạn đang kinh doanh ngành hàng nào? <span style="color: var(--accent);">*</span></label>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+          <label class="option-card">
+            <input type="radio" name="entry.1051473499" value="Thời trang" required>
+            <span>Thời trang</span>
+          </label>
+          <label class="option-card">
+            <input type="radio" name="entry.1051473499" value="Mỹ phẩm/Spa">
+            <span>Mỹ phẩm / Spa</span>
+          </label>
+          <label class="option-card">
+            <input type="radio" name="entry.1051473499" value="Đồ ăn/đồ uống">
+            <span>Đồ ăn / Đồ uống</span>
+          </label>
+          <label class="option-card">
+            <input type="radio" name="entry.1051473499" value="Đồ handmade">
+            <span>Đồ handmade</span>
+          </label>
+          <label class="option-card">
+            <input type="radio" name="entry.1051473499" value="Dịch vụ địa phương">
+            <span>Dịch vụ địa phương</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Việc marketing đau đầu nhất -->
+      <div class="form-group">
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">4. Việc marketing nào đang khiến bạn đau đầu nhất? (Chọn nhiều) <span style="color: var(--accent);">*</span></label>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label class="option-card long">
+            <input type="checkbox" name="entry.965291000" value="Không biết đăng gì mỗi ngày">
+            <span>Không biết đăng gì mỗi ngày</span>
+          </label>
+          <label class="option-card long">
+            <input type="checkbox" name="entry.965291000" value="Chạy quảng cáo mà không có chuyển đổi">
+            <span>Chạy quảng cáo mà không có chuyển đổi</span>
+          </label>
+          <label class="option-card long">
+            <input type="checkbox" name="entry.965291000" value="Tốn tiền thuê thiết kế ảnh/video">
+            <span>Tốn tiền thuê thiết kế ảnh/video</span>
+          </label>
+          <label class="option-card long">
+            <input type="checkbox" name="entry.965291000" value="Sót tin nhắn khách hàng">
+            <span>Sót tin nhắn khách hàng</span>
+          </label>
+          <label class="option-card long">
+            <input type="checkbox" name="entry.965291000" value="Tuột đơn của khách">
+            <span>Tuột đơn của khách</span>
+          </label>
+          <label class="option-card long">
+            <input type="checkbox" name="entry.965291000" value="Muốn dùng AI nhưng không biết bắt đầu">
+            <span>Muốn dùng AI nhưng không biết bắt đầu</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Mức độ dùng AI -->
+      <div class="form-group">
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">5. Hiện tại bạn đang dùng AI để làm marketing ở mức nào? <span style="color: var(--accent);">*</span></label>
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+          <label class="option-card long">
+            <input type="radio" name="entry.89806194" value="Chưa dùng bao giờ" required>
+            <span>Chưa dùng bao giờ</span>
+          </label>
+          <label class="option-card long">
+            <input type="radio" name="entry.89806194" value="Có thử vài lần nhưng chưa ăn thua">
+            <span>Có thử vài lần nhưng chưa ăn thua</span>
+          </label>
+          <label class="option-card long">
+            <input type="radio" name="entry.89806194" value="Đang dùng khá thường xuyên">
+            <span>Đang dùng khá thường xuyên</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Muốn bắt đầu khi nào -->
+      <div class="form-group">
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">6. Nếu có giải pháp phù hợp, bạn muốn bắt đầu khi nào? <span style="color: var(--accent);">*</span></label>
+        <div style="display: flex; gap: 16px; flex-wrap: wrap;">
+          <label class="option-card" style="flex: 1; min-width: 150px;">
+            <input type="radio" name="entry.1473271076" value="Ngay bây giờ" required>
+            <span>Ngay bây giờ</span>
+          </label>
+          <label class="option-card" style="flex: 1; min-width: 150px;">
+            <input type="radio" name="entry.1473271076" value="Trong tháng này">
+            <span>Trong tháng này</span>
+          </label>
+          <label class="option-card" style="flex: 1; min-width: 150px;">
+            <input type="radio" name="entry.1473271076" value="Đang tìm hiểu">
+            <span>Đang tìm hiểu</span>
+          </label>
+        </div>
+      </div>
+
+      <!-- Bạn thường bán hàng ở kênh nào -->
+      <div class="form-group">
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">7. Bạn thường bán hàng ở những kênh nào? (Chọn nhiều) <span style="color: var(--accent);">*</span></label>
+        <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
+          <label class="option-card">
+            <input type="checkbox" name="entry.972226849" value="Facebook">
+            <span>Facebook</span>
+          </label>
+          <label class="option-card">
+            <input type="checkbox" name="entry.972226849" value="Zalo">
+            <span>Zalo</span>
+          </label>
+          <label class="option-card">
+            <input type="checkbox" name="entry.972226849" value="TikTok">
+            <span>TikTok</span>
+          </label>
+          <label class="option-card">
+            <input type="checkbox" name="entry.972226849" value="Shopee/Lazada">
+            <span>Shopee / Lazada</span>
+          </label>
+          <label class="option-card">
+            <input type="checkbox" name="entry.972226849" value="Website riêng">
+            <span>Website riêng</span>
+          </label>
+          <label class="option-card">
+            <input type="checkbox" name="entry.972226849" value="Bán trực tiếp tại cửa hàng">
+            <span>Bán trực tiếp tại cửa hàng</span>
+          </label>
+        </div>
+      </div>
+      <div style="margin-top: 10px;">
+        <button type="submit" class="btn" style="width: 100%; border: none; cursor: pointer; text-align: center; justify-content: center; display: flex; align-items: center; gap: 8px;">
+          <span>GỬI ĐĂNG KÝ NGAY HÔM NAY</span>
+        </button>
+      </div>
+    </form>
+  </div>
+</section>
+
+<!-- Success Modal -->
+<div id="successModal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15,41,71,0.6); backdrop-filter: blur(4px); z-index: 9999; align-items: center; justify-content: center; padding: 20px;">
+  <div style="background: #fff; border-radius: 24px; padding: 40px 30px; max-width: 480px; width: 100%; text-align: center; box-shadow: 0 20px 50px rgba(0,0,0,0.15); animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;">
+    <div style="font-size: 64px; margin-bottom: 20px; line-height: 1;">🎉</div>
+    <h3 style="font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 12px;">Đăng Ký Thành Công!</h3>
+    <p style="color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 28px;">Thông tin đăng ký của bạn đã được ghi nhận. Tôi sẽ liên hệ trực tiếp hỗ trợ bạn trong vòng 15 phút tới qua Số điện thoại / Zalo.</p>
+    <button onclick="closeSuccessModal()" class="btn" style="width: 100%; border: none; cursor: pointer; padding: 14px 28px; font-size: 16px;">Tuyệt vời, đóng lại</button>
+  </div>
+</div>
+
+<!-- ============ GUARANTEE ============ -->
+<section class="guar">
+  <div class="wrap">
+    <div class="guar-box">
+      <div class="badge">🛡️</div>
+      <h2>Cam kết hoàn tiền trong 7 ngày</h2>
+      <p>Học thử trọn 7 ngày. Nếu bạn thực hành theo hướng dẫn mà thấy khóa học không mang lại giá trị, chỉ cần nhắn một tin — chúng tôi hoàn lại 100% học phí, không hỏi lý do. Rủi ro thuộc về chúng tôi, không phải bạn.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section>
+  <div class="wrap">
+    <h2>Câu hỏi thường gặp</h2>
+    <p class="sub">Những băn khoăn phổ biến trước khi bắt đầu.</p>
+
+    <div class="faq-item open"><div class="faq-q">Tôi không rành công nghệ, có học được không?<span class="cx">+</span></div>
+      <div class="faq-a">Hoàn toàn được. Nếu bạn nhắn tin Zalo được là bạn dùng được AI. Khóa học thiết kế cầm tay chỉ việc, có demo từng bước, dành riêng cho người mới.</div></div>
+
+    <div class="faq-item"><div class="faq-q">Tôi rất bận, không có nhiều thời gian thì sao?<span class="cx">+</span></div>
+      <div class="faq-a">Chính vì bạn bận nên khóa này càng hợp. Mục tiêu là giúp bạn làm marketing dưới 30 phút/ngày. Video ngắn, học linh hoạt, xem lại trọn đời theo nhịp của bạn.</div></div>
+
+    <div class="faq-item"><div class="faq-q">Khóa học có hợp với ngành hàng của tôi không?<span class="cx">+</span></div>
+      <div class="faq-a">Có. Nguyên tắc áp dụng cho mọi shop bán sản phẩm/dịch vụ: thời trang, mỹ phẩm, ăn uống, spa, đồ handmade, dịch vụ địa phương… Thư viện prompt có mẫu theo nhiều ngành.</div></div>
+
+    <div class="faq-item"><div class="faq-q">Công cụ AI có tốn tiền không?<span class="cx">+</span></div>
+      <div class="faq-a">Phần lớn công cụ đều có bản miễn phí đủ dùng cho người mới. Khóa học chỉ cho bạn dùng bản trả phí khi thật sự cần và đáng tiền.</div></div>
+
+    <div class="faq-item"><div class="faq-q">Công cụ AI thay đổi liên tục, học xong có lỗi thời không?<span class="cx">+</span></div>
+      <div class="faq-a">Điều bạn học là tư duy và quy trình — áp dụng cho mọi công cụ. Ngoài ra có Module riêng dạy cách tự cập nhật, cùng bản cập nhật công cụ mới (gói Tiêu chuẩn trở lên).</div></div>
+
+    <div class="faq-item"><div class="faq-q">Nếu học xong tôi vẫn không làm được thì sao?<span class="cx">+</span></div>
+      <div class="faq-a">Bạn có 7 ngày hoàn tiền, và có cộng đồng + Live Q&amp;A để hỏi khi vướng. Bạn không đơn độc — chúng tôi đồng hành đến khi shop bạn chạy được.</div></div>
+
+  </div>
+</section>
+
+<!-- ============ FINAL CTA ============ -->
+<section class="final">
+  <div class="wrap">
+    <h2>Đối thủ của bạn đã bắt đầu dùng AI. Còn bạn?</h2>
+    <p>Mỗi ngày trôi qua là thêm những đơn hàng lẽ ra là của bạn. Bắt đầu hôm nay — trong vài tuần tới, chính bạn sẽ có một hệ thống marketing AI chạy cho shop mình.</p>
+    <div><span class="urg">⏰ Ưu đãi &amp; suất kèm cặp 1-1 có giới hạn</span></div>
+    <div class="btn-wrap"><a href="thanh-toan.html?goi=tieu-chuan" class="btn">👉 ĐĂNG KÝ NGAY — GIỮ SUẤT CỦA BẠN</a></div>
+    <p class="micro" style="color:#9db4cc">Cần tư vấn thêm? Nhắn Zalo/điện thoại: <b style="color:#fff">0905184871</b></p>
+  </div>
+</section>
+
+<footer>
+  © <span id="yr"></span> Khóa học AI Marketing Thực Chiến cho Chủ Shop &amp; SME — Võ An. Đã đăng ký bản quyền nội dung.
+</footer>
+
+<script>
+  document.querySelectorAll('.mod-h').forEach(function(h){
+    h.addEventListener('click',function(){ h.parentElement.classList.toggle('open'); });
+  });
+  document.querySelectorAll('.faq-q').forEach(function(q){
+    q.addEventListener('click',function(){ q.parentElement.classList.toggle('open'); });
+  });
+  document.getElementById('yr').textContent = new Date().getFullYear();
+
+  // Custom Form Submission to Google Forms
+  document.getElementById('customForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const form = e.target;
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    
+    // Change button state to loading
+    submitBtn.disabled = true;
+    submitBtn.innerHTML = '<span>Đang gửi đăng ký...</span>';
+
+    const formData = new FormData();
+    
+    // Name
+    formData.append('entry.623293007', document.getElementById('txtName').value);
+    
+    // Phone
+    formData.append('entry.755693769', document.getElementById('txtPhone').value);
+    
+    // Business Category (Radio)
+    const businessRadio = form.querySelector('input[name="entry.1051473499"]:checked');
+    if (businessRadio) {
+      formData.append('entry.1051473499', businessRadio.value);
+    }
+    
+    // Marketing pain point (Checkboxes - Multiple Choice)
+    const painCheckboxes = form.querySelectorAll('input[name="entry.965291000"]:checked');
+    painCheckboxes.forEach(cb => {
+      formData.append('entry.965291000', cb.value);
+    });
+    
+    // AI level usage (Radio)
+    const aiLevelRadio = form.querySelector('input[name="entry.89806194"]:checked');
+    if (aiLevelRadio) {
+      formData.append('entry.89806194', aiLevelRadio.value);
+    }
+    
+    // Start Time (Radio)
+    const startTimeRadio = form.querySelector('input[name="entry.1473271076"]:checked');
+    if (startTimeRadio) {
+      formData.append('entry.1473271076', startTimeRadio.value);
+    }
+    
+    // Channels (Checkboxes)
+    const channelCheckboxes = form.querySelectorAll('input[name="entry.972226849"]:checked');
+    channelCheckboxes.forEach(cb => {
+      formData.append('entry.972226849', cb.value);
+    });
+
+    // Post to Google Forms formResponse URL in background
+    const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfad9sAbpoOBUepfWxsCsr1SPmuhPpZbmVJospppQ6DxI5m9g/formResponse';
+    
+    fetch(formUrl, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: formData
+    })
+    .then(() => {
+      // Show Success Modal
+      document.getElementById('successModal').style.display = 'flex';
+      form.reset();
+    })
+    .catch(err => {
+      console.error('Submit error:', err);
+      alert('Đã có lỗi xảy ra khi gửi đăng ký. Vui lòng thử lại hoặc liên hệ Zalo: 0905184871.');
+    })
+    .finally(() => {
+      // Restore button state
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = originalText;
+    });
+  });
+
+  function closeSuccessModal() {
+    document.getElementById('successModal').style.display = 'none';
+  }
+</script>
