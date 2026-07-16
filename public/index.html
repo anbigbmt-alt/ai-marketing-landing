@@ -674,3 +674,331 @@
     document.getElementById('successModal').style.display = 'none';
   }
 </script>
+
+<!-- ================= CHATBOT WIDGET ================= -->
+<div id="chatbot-widget" style="position: fixed; bottom: 24px; right: 24px; z-index: 9999; font-family: -apple-system, 'Segoe UI', Roboto, sans-serif;">
+  <!-- Launcher Button -->
+  <button id="chatbot-launcher" onclick="toggleChat()" style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, var(--navy), #1c3d63); border: none; cursor: pointer; box-shadow: 0 8px 24px rgba(15,41,71,0.3); display: flex; align-items: center; justify-content: center; transition: transform 0.2s; outline: none;">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+    </svg>
+  </button>
+
+  <!-- Chat Window -->
+  <div id="chatbot-window" style="display: none; width: 370px; height: 500px; background: #fff; border-radius: 16px; box-shadow: 0 12px 36px rgba(0,0,0,0.15); border: 1px solid var(--line); flex-direction: column; overflow: hidden; position: absolute; bottom: 74px; right: 0; animation: chatbotFadeIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;">
+    <!-- Header -->
+    <div style="background: var(--navy); color: #fff; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.1);">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <img src="vo-an.jpg" alt="Võ An" style="width: 36px; height: 36px; border-radius: 50%; object-fit: cover; border: 1px solid rgba(255,255,255,0.2);">
+        <div>
+          <div style="font-weight: 700; font-size: 15px; line-height: 1.2;">Võ An (AI Marketing)</div>
+          <div style="font-size: 11px; color: #a3c4eb; display: flex; align-items: center; gap: 4px;">
+            <span style="width: 6px; height: 6px; background: #22c55e; border-radius: 50%; display: inline-block;"></span> Đang hoạt động
+          </div>
+        </div>
+      </div>
+      <button onclick="toggleChat()" style="background: none; border: none; color: #fff; font-size: 24px; cursor: pointer; padding: 0 4px; line-height: 1; opacity: 0.8; transition: opacity 0.2s;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=0.8">&times;</button>
+    </div>
+
+    <!-- Message Area -->
+    <div id="chatbot-messages" style="flex: 1; padding: 16px; overflow-y: auto; background: #f8fafc; display: flex; flex-direction: column; gap: 12px; scroll-behavior: smooth;">
+      <!-- Welcome Message -->
+      <div style="display: flex; gap: 8px; align-items: flex-start; max-width: 85%;">
+        <img src="vo-an.jpg" style="width: 28px; height: 28px; border-radius: 50%; object-fit: cover; flex-shrink: 0;">
+        <div style="background: #fff; color: var(--ink); border: 1px solid var(--line); padding: 10px 14px; border-radius: 4px 14px 14px 14px; font-size: 14px; line-height: 1.5; box-shadow: 0 2px 4px rgba(0,0,0,0.02); white-space: pre-line;">Alo bạn ơi, An nghe nè! 
+
+Bạn đang tìm hiểu khóa học AI Marketing để tự làm content, hình ảnh cho shop đúng k?
+
+Bấm các câu hỏi dưới đây hoặc nhắn cho An nha!</div>
+      </div>
+    </div>
+
+    <!-- Quick Replies (Chips Container) -->
+    <div id="chatbot-chips" style="padding: 10px 12px; background: #fff; border-top: 1px solid var(--line); display: flex; gap: 8px; overflow-x: auto; white-space: nowrap; scrollbar-width: none;">
+      <!-- Populated via script -->
+    </div>
+
+    <!-- Input Footer -->
+    <div style="padding: 10px 12px; border-top: 1px solid var(--line); background: #fff; display: flex; gap: 8px; align-items: center;">
+      <input type="text" id="chatbot-input" placeholder="Nhập câu hỏi của bạn..." onkeypress="handleKeyPress(event)" style="flex: 1; border: 1px solid var(--line); padding: 10px 14px; border-radius: 20px; font-size: 14px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--line)'">
+      <button onclick="sendUserMessage()" style="background: var(--blue); border: none; cursor: pointer; width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(31,111,235,0.25); transition: transform 0.1s;" onmousedown="this.style.transform='scale(0.95)'" onmouseup="this.style.transform='scale(1)'">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"></line>
+          <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+  @keyframes chatbotFadeIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.95); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  #chatbot-chips::-webkit-scrollbar {
+    display: none;
+  }
+  .chatbot-chip {
+    display: inline-block;
+    padding: 8px 14px;
+    background: #f1f5f9;
+    border: 1px solid var(--line);
+    border-radius: 18px;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--navy);
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  .chatbot-chip:hover {
+    background: var(--navy);
+    color: #fff;
+    border-color: var(--navy);
+  }
+  .chatbot-msg-btn {
+    display: inline-block;
+    margin-top: 8px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff !important;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-size: 13px;
+    text-decoration: none;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255,107,53,0.3);
+    transition: transform 0.1s;
+  }
+  .chatbot-msg-btn:hover {
+    transform: translateY(-1px);
+  }
+  .chatbot-msg-btn:active {
+    transform: translateY(0);
+  }
+  .typing-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--muted);
+    border-radius: 50%;
+    animation: typingBounce 1.4s infinite ease-in-out both;
+  }
+  .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+  .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+  @keyframes typingBounce {
+    0%, 80%, 100% { transform: scale(0); }
+    40% { transform: scale(1); }
+  }
+</style>
+
+<script>
+  const chatbotFaqs = [
+    {
+      q: "Học phí các gói thế nào hả An?",
+      short: "Học phí các gói?",
+      a: "Khóa học bên An có 3 gói cho bạn lựa chọn tùy nhu cầu nha:\n\n* **Cơ bản (1.500.000đ):** Học qua video 8 module, tự mày mò, có đủ template & 50 prompt thực chiến.\n* **Tiêu chuẩn (3.500.000đ) - Gói này nhiều chủ shop chọn nhất:** Có thêm live Q&A hàng tuần với An, vào nhóm học viên hỗ trợ và được cập nhật bài giảng mới trọn đời.\n* **Cao cấp 1 kèm 1 (7.500.000đ):** An kèm riêng 1-1, trực tiếp review shop và sửa bài cho bạn trong suốt lộ trình.\n\nChênh lệch giữa Cơ bản và Tiêu chuẩn là 2 triệu, nhưng có An đi cùng giải đáp hằng tuần thì bạn sẽ đi nhanh hơn nhiều.",
+      btn: true
+    },
+    {
+      q: "Mù công nghệ, k rành máy tính có học được k An?",
+      short: "Mù công nghệ học được k?",
+      a: "Đơn giản thôi bạn ơi! Nếu bạn nhắn tin Zalo hay lướt Facebook được là bạn học được.\n\nAn k dạy lập trình hay công nghệ sâu làm gì. Toàn bộ là video ngắn 5-10 phút, quay màn hình An click chuột chỗ nào bạn click chỗ đó. Cầm tay chỉ việc từ con số 0 luôn."
+    },
+    {
+      q: "An ơi, bận bán hàng cả ngày k có thời gian học thì sao?",
+      short: "Bận quá k có thời gian học?",
+      a: "Chính vì bận nên mới càng phải học AI đó bạn. AI sinh ra là để làm thay bạn mấy việc tốn thời gian mà.\n\nHọc xong bạn chỉ mất dưới 30 phút/ngày là xong content cả tuần rồi.\n\nBài giảng quay sẵn rất ngắn, bạn rảnh lúc nào mở điện thoại xem lúc đó, xem trọn đời k lo hết hạn nha."
+    },
+    {
+      q: "Học xong có phải tốn thêm tiền mua tài khoản AI trả phí k?",
+      short: "Có tốn tiền mua tool AI k?",
+      a: "Không cần phức tạp hóa đâu bạn. An sẽ chỉ bạn cách dùng **các bản miễn phí** (như Claude Free, Canva Free, web tạo video free) đã quá đủ dùng cho shop rồi.\n\nKhi nào shop ra đơn đều, doanh thu tốt thì nâng cấp lên bản trả phí sau, k cần mua trước cho tốn kém."
+    },
+    {
+      q: "Shop mình bán [Thời trang / Đồ ăn / Spa...] có áp dụng được k?",
+      short: "Ngành của mình áp dụng được k?",
+      a: "Được chứ bạn. Marketing thì ngách nào cũng cần content, hình ảnh với ads để ra đơn mà.\n\nTrong khóa học An có sẵn thư viện 50+ prompt thực chiến chia sẵn theo từng ngành hàng: thời trang, mỹ phẩm, ăn uống, spa, dịch vụ địa phương... Bạn chỉ cần lấy mẫu prompt đó áp dụng vào shop mình là ra bài ngay."
+    },
+    {
+      q: "Nhỡ học xong k làm được thì sao An? Có cam kết gì k?",
+      short: "Nhỡ k làm được thì sao?",
+      a: "An cam kết **Hoàn tiền 100% trong 7 ngày** k hỏi lý do.\n\nNếu bạn vào học thử, làm theo bài tập của Module 1-2 mà thấy k làm được hoặc k hợp phong cách của An, chỉ cần nhắn An 1 tin, An chuyển khoản trả lại học phí ngay lập tức. Rủi ro An chịu hết, bạn k mất gì cả."
+    },
+    {
+      q: "Khóa của An khác gì so với mấy trung tâm lớn ngoài kia?",
+      short: "Khác gì so với bên khác?",
+      a: "Thật ra các trung tâm lớn (như HBR, EQVN) họ dạy cho CEO quản lý phòng marketing 10 người, hoặc đào tạo bài bản cho người muốn làm nghề marketing chuyên nghiệp.\n\nCòn An chỉ tập trung dạy đúng **'Marketing 1 người'** cho các chủ shop tự làm. Chỉ dạy 3 thứ thiết yếu: viết content ra đơn, làm hình đẹp và chạy ads k đốt tiền. Đơn giản, thực tế, làm được luôn chứ k dạy lý thuyết suông."
+    },
+    {
+      q: "Văn do AI viết nghe có bị giả tạo, công nghiệp k An?",
+      short: "Văn AI nghe bị giả tạo k?",
+      a: "Nếu bạn copy-paste câu lệnh chung chung trên mạng thì văn nghe rất 'máy móc'.\n\nNhưng ở Module 1, An sẽ hướng dẫn bạn cách dạy AI hiểu về cá tính, USP sản phẩm và 'Brand Voice' riêng của shop bạn. Dạy xong thì AI viết y hệt như bạn đang viết, khách đọc k phân biệt được đâu."
+    },
+    {
+      q: "Gói Cao cấp 1 kèm 1 là học thế nào?",
+      short: "Gói 1 kèm 1 học thế nào?",
+      a: "Là An sẽ ngồi cạnh bạn trực tiếp qua Zoom/Zalo.\n\nAn sẽ review kỹ sản phẩm của shop bạn, sửa từng bài viết content, thiết kế lại banner và cài đặt luồng chatbot chốt đơn trực tiếp cho riêng shop bạn luôn. Gói này An giới hạn số lượng để đảm bảo chất lượng kèm cặp tốt nhất."
+    },
+    {
+      q: "Sau này AI thay đổi công cụ khác thì sao?",
+      short: "AI thay đổi thì sao?",
+      a: "Bạn yên tâm, tư duy và công thức prompt 4 phần của An là áp dụng cho mọi loại AI, công cụ nào cũng chạy được.\n\nNgoài ra với gói Tiêu chuẩn trở lên, khi có công cụ mới ngon hơn, An sẽ cập nhật bài giảng mới vào khóa học hoàn toàn miễn phí."
+    }
+  ];
+
+  function toggleChat() {
+    const win = document.getElementById('chatbot-window');
+    const isHidden = win.style.display === 'none' || win.style.display === '';
+    win.style.display = isHidden ? 'flex' : 'none';
+    if (isHidden) {
+      loadChips();
+      setTimeout(() => {
+        const msgs = document.getElementById('chatbot-messages');
+        msgs.scrollTop = msgs.scrollHeight;
+      }, 50);
+    }
+  }
+
+  function loadChips() {
+    const container = document.getElementById('chatbot-chips');
+    container.innerHTML = '';
+    chatbotFaqs.forEach((faq, index) => {
+      const chip = document.createElement('div');
+      chip.className = 'chatbot-chip';
+      chip.innerText = faq.short;
+      chip.onclick = () => selectChip(index);
+      container.appendChild(chip);
+    });
+  }
+
+  function selectChip(index) {
+    const faq = chatbotFaqs[index];
+    addUserMessage(faq.q);
+    showTypingAndReply(faq.a, faq.btn);
+  }
+
+  function handleKeyPress(e) {
+    if (e.key === 'Enter') {
+      sendUserMessage();
+    }
+  }
+
+  function sendUserMessage() {
+    const input = document.getElementById('chatbot-input');
+    const val = input.value.trim();
+    if (!val) return;
+
+    addUserMessage(val);
+    input.value = '';
+
+    let match = null;
+    let maxScore = 0;
+    chatbotFaqs.forEach(faq => {
+      const qNorm = faq.q.toLowerCase();
+      const valNorm = val.toLowerCase();
+      let matchesCount = 0;
+      valNorm.split(' ').forEach(word => {
+        if (qNorm.includes(word) && word.length > 2) {
+          matchesCount++;
+        }
+      });
+      if (matchesCount > maxScore) {
+        maxScore = matchesCount;
+        match = faq;
+      }
+    });
+
+    if (match && maxScore > 0) {
+      showTypingAndReply(match.a, match.btn);
+    } else {
+      showTypingAndReply("Thật ra câu này An cần xem kỹ thông tin shop bạn mới rep chuẩn được. Bạn nhắn tin qua Zalo số 0905 184 871 ngay cho An nha, hoặc điền khảo sát để An xem qua shop rồi ib tư vấn trực tiếp nha!", true);
+    }
+  }
+
+  function addUserMessage(text) {
+    const msgs = document.getElementById('chatbot-messages');
+    const msg = document.createElement('div');
+    msg.style.alignSelf = 'flex-end';
+    msg.style.background = 'var(--blue)';
+    msg.style.color = '#fff';
+    msg.style.padding = '10px 14px';
+    msg.style.borderRadius = '14px 4px 14px 14px';
+    msg.style.fontSize = '14px';
+    msg.style.maxWidth = '85%';
+    msg.style.boxShadow = '0 2px 8px rgba(31,111,235,0.15)';
+    msg.style.whiteSpace = 'pre-line';
+    msg.innerText = text;
+    msgs.appendChild(msg);
+    msgs.scrollTop = msgs.scrollHeight;
+  }
+
+  function showTypingAndReply(replyText, showRegisterButton = false) {
+    const msgs = document.getElementById('chatbot-messages');
+    
+    const typing = document.createElement('div');
+    typing.id = 'chatbot-typing';
+    typing.style.display = 'flex';
+    typing.style.gap = '4px';
+    typing.style.alignItems = 'center';
+    typing.style.background = '#e2e8f0';
+    typing.style.padding = '12px 16px';
+    typing.style.borderRadius = '4px 14px 14px 14px';
+    typing.style.alignSelf = 'flex-start';
+    typing.style.width = 'fit-content';
+    typing.innerHTML = '<span class="typing-dot"></span><span class="typing-dot"></span><span class="typing-dot"></span>';
+    
+    const wrap = document.createElement('div');
+    wrap.style.display = 'flex';
+    wrap.style.gap = '8px';
+    wrap.style.alignItems = 'flex-start';
+    wrap.style.maxWidth = '85%';
+    wrap.appendChild(typing);
+    
+    const av = document.createElement('img');
+    av.src = 'vo-an.jpg';
+    av.style.width = '28px';
+    av.style.height = '28px';
+    av.style.borderRadius = '50%';
+    av.style.objectFit = 'cover';
+    av.style.flexShrink = '0';
+    
+    wrap.insertBefore(av, typing);
+    msgs.appendChild(wrap);
+    msgs.scrollTop = msgs.scrollHeight;
+
+    setTimeout(() => {
+      wrap.removeChild(typing);
+      
+      const msg = document.createElement('div');
+      msg.style.background = '#fff';
+      msg.style.color = 'var(--ink)';
+      msg.style.border = '1px solid var(--line)';
+      msg.style.padding = '10px 14px';
+      msg.style.borderRadius = '4px 14px 14px 14px';
+      msg.style.fontSize = '14px';
+      msg.style.lineHeight = '1.5';
+      msg.style.boxShadow = '0 2px 4px rgba(0,0,0,0.02)';
+      msg.style.whiteSpace = 'pre-line';
+      
+      let formatted = replyText.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+      msg.innerHTML = formatted;
+      
+      if (showRegisterButton) {
+        const btn = document.createElement('a');
+        btn.href = '#dangky-form';
+        btn.className = 'chatbot-msg-btn';
+        btn.innerText = '👉 Đăng Ký Giữ Suất Ngay';
+        btn.onclick = () => {
+          toggleChat();
+        };
+        msg.appendChild(document.createElement('br'));
+        msg.appendChild(btn);
+      }
+      
+      wrap.appendChild(msg);
+      msgs.scrollTop = msgs.scrollHeight;
+    }, 600);
+  }
+</script>
