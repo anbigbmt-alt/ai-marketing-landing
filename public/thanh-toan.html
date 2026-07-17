@@ -412,18 +412,9 @@
       opacity: 1;
     }
 
-    /* BLUR UNTIL REGISTERED */
-    .blur-section {
-      opacity: 0.3;
-      pointer-events: none;
-      filter: blur(2px);
-      transition: all 0.3s ease;
-    }
-
-    .blur-section.active {
-      opacity: 1;
-      pointer-events: auto;
-      filter: none;
+    /* STEP 2: PAYMENT GRID (HIDDEN BY DEFAULT) */
+    #payment-grid {
+      display: none;
     }
 
     @keyframes chatbotFadeIn {
@@ -500,8 +491,8 @@
       </form>
     </div>
 
-    <!-- PAYMENT AREA (BLURRED UNTIL SUBMITTED) -->
-    <div class="grid blur-section" id="payment-grid">
+    <!-- PAYMENT AREA (HIDDEN UNTIL SUBMITTED) -->
+    <div class="grid" id="payment-grid">
       
       <!-- COLUMN 1: TRANSFER INFO -->
       <div class="card" style="margin-bottom: 0;">
@@ -582,24 +573,23 @@
 
     </div>
 
+    <!-- SUCCESS CARD (HIDDEN BY DEFAULT) -->
+    <div class="card" id="success-card" style="display: none; text-align: center; max-width: 550px; margin: 40px auto; padding: 50px 40px; box-shadow: var(--card-shadow); border-radius: 16px; border: 1px solid var(--line);">
+      <div style="font-size: 64px; color: var(--green); margin-bottom: 20px; animation: chatbotFadeIn 0.5s ease;">🎉</div>
+      <h3 style="font-size: 24px; font-weight: 800; color: var(--navy); margin-bottom: 16px;">ĐĂNG KÝ HỌC THÀNH CÔNG!</h3>
+      <p style="color: var(--muted); font-size: 16px; line-height: 1.6; margin-bottom: 30px;">
+        Cảm ơn bạn! Hệ thống đã tự động nhận tiền và kích hoạt tài khoản của bạn. 
+        Mentor <b>Võ An</b> sẽ trực tiếp inbox qua số điện thoại/Zalo để bàn giao tài liệu học tập và lộ trình kèm cặp cho bạn ngay nha!
+      </p>
+      <button class="submit-btn" onclick="window.location.href='/'" style="max-width: 250px; margin: 0 auto; display: block;">QUAY LẠI TRANG CHỦ</button>
+    </div>
+
     <!-- SUPPORT -->
     <div class="support-info">
       Bạn gặp khó khăn trong quá trình thanh toán? Gọi ngay Hotline Zalo hỗ trợ: <a href="tel:0905184871">0905184871</a> (Võ An)
     </div>
 
   </main>
-
-  <!-- SUCCESS MODAL -->
-  <div id="payment-success-modal" class="modal" style="display:none">
-    <div class="modal-content" style="text-align: center; max-width: 450px;">
-      <div style="font-size: 60px; color: var(--green); margin-bottom: 16px;">🎉</div>
-      <h3 style="font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 12px;">Đăng ký thành công!</h3>
-      <p style="color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
-        Hệ thống đã nhận được thanh toán chuyển khoản từ bạn. Tài khoản học viên của bạn đã được kích hoạt. Võ An sẽ inbox tư vấn lộ trình và kèm cặp trực tiếp cho bạn qua SĐT/Zalo ngay nha!
-      </p>
-      <button class="submit-btn" onclick="window.location.href='/'">QUAY LẠI TRANG CHỦ</button>
-    </div>
-  </div>
 
   <script>
     // 1. DYNAMIC CONFIGURATION BASED ON URL PARAMS
@@ -691,10 +681,11 @@
           navigator.clipboard.writeText(message).catch(() => {});
         });
 
-        // Activate Payment Area and scroll into view
+        // Hide registration form card and show payment details grid
+        document.getElementById('form-card').style.display = 'none';
         const paymentGrid = document.getElementById('payment-grid');
-        paymentGrid.classList.add('active');
-        paymentGrid.scrollIntoView({ behavior: 'smooth' });
+        paymentGrid.style.display = 'grid';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Disable registration form inputs
         document.getElementById('checkout-form').querySelectorAll('input, button').forEach(el => {
@@ -737,10 +728,11 @@
           navigator.clipboard.writeText(message).catch(() => {});
         });
 
-        // Activate Payment Area and scroll into view
+        // Hide registration form card and show payment details grid
+        document.getElementById('form-card').style.display = 'none';
         const paymentGrid = document.getElementById('payment-grid');
-        paymentGrid.classList.add('active');
-        paymentGrid.scrollIntoView({ behavior: 'smooth' });
+        paymentGrid.style.display = 'grid';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
 
         // Update loader status text to indicate preview mode
         document.querySelector('.status-loader span').textContent = 'Chế độ xem trước (Vui lòng quét QR chuyển khoản)';
@@ -770,7 +762,9 @@
     }
 
     function showSuccessModal() {
-      document.getElementById('payment-success-modal').style.display = 'flex';
+      document.getElementById('payment-grid').style.display = 'none';
+      document.getElementById('success-card').style.display = 'block';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     // 3. PERSISTENT COUNTDOWN TIMER (12 HOURS)
