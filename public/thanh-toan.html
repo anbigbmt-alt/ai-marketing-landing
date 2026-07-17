@@ -709,10 +709,11 @@
       .catch(err => {
         console.warn('Backend offline or Vercel static environment. Switching to Preview Mode:', err);
         
-        // Generate client-side fallback memo
+        // Generate client-side fallback memo: AIMAR + Gói học + 4 số đuôi sđt
         const configMemo = selectedGoi === 'co-ban' ? 'AIMARCOBAN' : (selectedGoi === 'cao-cap' ? 'AIMARCAOCAP' : 'AIMARTIEUCHUAN');
-        const randomSuffix = Math.floor(100 + Math.random() * 900);
-        const memo = `${configMemo}${randomSuffix}`;
+        const cleanPhone = (customer_phone || '').trim().replace(/\s+/g, '');
+        const last4 = cleanPhone.slice(-4) || '0000';
+        const memo = `${configMemo}${last4}`;
 
         // Update Transfer details
         document.getElementById('transfer-amount').textContent = formatCurrency(config.promoPrice);

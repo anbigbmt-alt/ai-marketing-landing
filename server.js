@@ -138,8 +138,16 @@ app.post('/api/orders', (req, res) => {
     
     const orderId = this.lastID;
     
-    // 2. Generate unique memo: e.g., "AIMAR123" (order ID)
-    const memo = `AIMAR${orderId}`;
+    // 2. Generate unique memo: AImar + Gói học + 4 số đuôi sđt
+    let pkgSuffix = 'TIEUCHUAN';
+    if (product_name.includes('Cơ bản') || product_name.toLowerCase().includes('coban')) {
+      pkgSuffix = 'COBAN';
+    } else if (product_name.includes('Cao cấp') || product_name.toLowerCase().includes('caocap')) {
+      pkgSuffix = 'CAOCAP';
+    }
+    const cleanPhone = (customer_phone || '').trim().replace(/\s+/g, '');
+    const last4 = cleanPhone.slice(-4) || '0000';
+    const memo = `AIMAR${pkgSuffix}${last4}`;
     
     db.run('UPDATE orders SET memo = ? WHERE id = ?', [memo, orderId], (updateErr) => {
       if (updateErr) return res.status(500).json({ error: updateErr.message });
