@@ -707,10 +707,49 @@
         startPolling(orderId);
       })
       .catch(err => {
-        console.error('Checkout error:', err);
-        alert('Đã có lỗi xảy ra. Vui lòng liên hệ hotline Zalo để được hỗ trợ.');
-        btn.disabled = false;
-        btn.innerHTML = originalText;
+        console.warn('Backend offline or Vercel static environment. Switching to Preview Mode:', err);
+        
+        // Generate client-side fallback memo
+        const configMemo = selectedGoi === 'co-ban' ? 'AIMARCOBAN' : (selectedGoi === 'cao-cap' ? 'AIMARCAOCAP' : 'AIMARTIEUCHUAN');
+        const randomSuffix = Math.floor(100 + Math.random() * 900);
+        const memo = `${configMemo}${randomSuffix}`;
+
+        // Update Transfer details
+        document.getElementById('transfer-amount').textContent = formatCurrency(config.promoPrice);
+        document.getElementById('transfer-amount-raw').textContent = config.promoPrice;
+        document.getElementById('transfer-memo').textContent = memo;
+
+        // Bank config
+        const bankId = 'MB'; // MB Bank
+        const accountNo = '0905184871'; // Account number
+        const accountName = 'VO AN'; // Account name
+
+        // Dynamic VietQR generator (amount parameter omitted so customer enters it manually)
+        const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.jpg?addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(accountName)}`;
+        document.getElementById('vietqr-img').src = qrUrl;
+
+        // Set Zalo button dynamic link message query
+        const zaloBtn = document.getElementById('zalo-link');
+        const message = `Chào anh Võ An, tôi đã đăng ký khóa học ${config.title}. Mã đơn hàng: ${memo}. Nhờ anh xác nhận kích hoạt giúp tôi!`;
+        zaloBtn.href = `https://zalo.me/0905184871?text=${encodeURIComponent(message)}`;
+        zaloBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(message).catch(() => {});
+        });
+
+        // Activate Payment Area and scroll into view
+        const paymentGrid = document.getElementById('payment-grid');
+        paymentGrid.classList.add('active');
+        paymentGrid.scrollIntoView({ behavior: 'smooth' });
+
+        // Update loader status text to indicate preview mode
+        document.querySelector('.status-loader span').textContent = 'Chế độ xem trước (Vui lòng quét QR chuyển khoản)';
+
+        // Disable registration form inputs
+        document.getElementById('checkout-form').querySelectorAll('input, button').forEach(el => {
+          el.disabled = true;
+        });
+        btn.innerHTML = '✔️ ĐÃ TẠO ĐƠN HÀNG (CHẾ ĐỘ XEM TRƯỚC)';
+        btn.style.background = 'var(--green)';
       });
     }
 
