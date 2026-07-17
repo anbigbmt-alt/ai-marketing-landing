@@ -55,6 +55,7 @@
       max-width: 900px;
       margin: -30px auto 60px;
       padding: 0 20px;
+      text-align: center;
     }
 
     /* COUNTDOWN BANNER */
@@ -69,6 +70,7 @@
       align-items: center;
       justify-content: space-between;
       box-shadow: var(--card-shadow);
+      text-align: left;
     }
 
     .timer-text {
@@ -99,6 +101,7 @@
       display: grid;
       grid-template-columns: 1.2fr 0.8fr;
       gap: 24px;
+      text-align: left;
     }
 
     .card {
@@ -107,6 +110,7 @@
       border-radius: 16px;
       padding: 28px;
       box-shadow: var(--card-shadow);
+      margin-bottom: 24px;
     }
 
     .card-title {
@@ -121,6 +125,60 @@
       gap: 8px;
     }
 
+    /* FORM STYLING */
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--navy);
+      margin-bottom: 6px;
+    }
+
+    .form-control {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px 16px;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .form-control:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.1);
+    }
+
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      padding: 15px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+      transition: all 0.2s;
+      margin-top: 10px;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(255, 107, 53, 0.4);
+    }
+
+    .submit-btn:disabled {
+      background: var(--muted);
+      box-shadow: none;
+      cursor: not-allowed;
+    }
+
     /* DETAILS OF SELECTED PACKAGE */
     .package-summary {
       background: var(--bg);
@@ -131,7 +189,7 @@
     }
 
     .package-name {
-      font-size: 20px;
+      font-size: 18px;
       font-weight: 800;
       color: var(--navy);
       margin-bottom: 6px;
@@ -144,13 +202,13 @@
     }
 
     .price-promo {
-      font-size: 28px;
+      font-size: 24px;
       font-weight: 900;
       color: var(--green);
     }
 
     .price-original {
-      font-size: 16px;
+      font-size: 15px;
       color: var(--muted);
       text-decoration: line-through;
     }
@@ -229,6 +287,7 @@
       font-size: 13px;
       color: var(--muted);
       line-height: 1.4;
+      text-align: left;
     }
 
     .qr-desc b {
@@ -287,7 +346,36 @@
       font-weight: 900;
     }
 
-    /* TESTIMONIAL / TRUST */
+    /* STATUS LOADER */
+    .status-loader {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 14px 20px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 14px;
+      margin-top: 15px;
+      width: 100%;
+    }
+
+    .status-loader .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background: #0369a1;
+      border-radius: 50%;
+      animation: pulseAnim 1.2s infinite;
+    }
+
+    @keyframes pulseAnim {
+      0%, 100% { transform: scale(0.6); opacity: 0.5; }
+      50% { transform: scale(1.2); opacity: 1; }
+    }
+
+    /* SUPPORT */
     .support-info {
       text-align: center;
       margin-top: 30px;
@@ -324,6 +412,25 @@
       opacity: 1;
     }
 
+    /* BLUR UNTIL REGISTERED */
+    .blur-section {
+      opacity: 0.3;
+      pointer-events: none;
+      filter: blur(2px);
+      transition: all 0.3s ease;
+    }
+
+    .blur-section.active {
+      opacity: 1;
+      pointer-events: auto;
+      filter: none;
+    }
+
+    @keyframes chatbotFadeIn {
+      from { opacity: 0; transform: translateY(12px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
     @media (max-width: 768px) {
       .grid {
         grid-template-columns: 1fr;
@@ -334,9 +441,6 @@
         gap: 12px;
       }
       .header h1 {
-        font-size: 24px;
-      }
-      .price-promo {
         font-size: 24px;
       }
     }
@@ -366,24 +470,45 @@
     </div>
 
     <!-- MAIN WORKSPACE -->
-    <div class="grid">
+    <div class="card" id="form-card" style="text-align: left; max-width: 650px; margin: 0 auto 30px;">
+      <div class="card-title">
+        <span>📝</span> Bước 1: Nhập thông tin đăng ký học
+      </div>
+      
+      <div class="package-summary" style="margin-bottom: 20px;">
+        <div class="package-name" id="pkg-title">Đang tải gói học phí...</div>
+        <div class="package-price">
+          <span class="price-promo" id="pkg-price-promo">0đ</span>
+          <span class="price-original" id="pkg-price-orig">0đ</span>
+        </div>
+      </div>
+
+      <form id="checkout-form" onsubmit="submitCheckout(event)">
+        <div class="form-group">
+          <label for="txtName">Họ và tên của bạn</label>
+          <input type="text" id="txtName" class="form-control" placeholder="Nhập họ và tên..." required>
+        </div>
+        <div class="form-group">
+          <label for="txtPhone">Số điện thoại / Zalo</label>
+          <input type="tel" id="txtPhone" class="form-control" placeholder="Nhập số điện thoại (ví dụ: 0905xxxxxx)..." pattern="^(0[3|5|7|8|9][0-9]{8})$" title="Vui lòng nhập số điện thoại hợp lệ gồm 10 chữ số" required>
+        </div>
+        <div class="form-group">
+          <label for="txtEmail">Địa chỉ Email</label>
+          <input type="email" id="txtEmail" class="form-control" placeholder="Nhập email để nhận học liệu..." required>
+        </div>
+        <button type="submit" id="btnSubmitForm" class="submit-btn">👉 XÁC NHẬN ĐĂNG KÝ &amp; LẤY MÃ THANH TOÁN</button>
+      </form>
+    </div>
+
+    <!-- PAYMENT AREA (BLURRED UNTIL SUBMITTED) -->
+    <div class="grid blur-section" id="payment-grid">
       
       <!-- COLUMN 1: TRANSFER INFO -->
-      <div class="card">
+      <div class="card" style="margin-bottom: 0;">
         <div class="card-title">
-          <span>💳</span> Thông tin chuyển khoản
+          <span>💳</span> Bước 2: Chuyển khoản ngân hàng
         </div>
 
-        <div class="package-summary">
-          <div class="package-name" id="pkg-title">Đang tải gói học phí...</div>
-          <div class="package-price">
-            <span class="price-promo" id="pkg-price-promo">0đ</span>
-            <span class="price-original" id="pkg-price-orig">0đ</span>
-          </div>
-        </div>
-
-        <!-- BANK DETAILS -->
-        <!-- THAY ĐỔI THÔNG TIN NGÂN HÀNG CỦA BẠN TẠI ĐÂY -->
         <table class="bank-info-table">
           <tr>
             <td class="label">Ngân hàng</td>
@@ -415,15 +540,20 @@
           <tr>
             <td class="label">Nội dung chuyển tiền</td>
             <td class="value">
-              <span id="transfer-memo" style="color: var(--accent);">AIMARKETING TIEUCHUAN</span>
+              <span id="transfer-memo" style="color: var(--accent); font-weight: 800;">Tạo mã đơn hàng...</span>
               <button class="copy-btn" onclick="copyText('transfer-memo')">Sao chép</button>
             </td>
           </tr>
         </table>
+        
+        <div class="status-loader">
+          <span class="pulse-dot"></span>
+          <span>Hệ thống đang quét giao dịch tự động...</span>
+        </div>
       </div>
 
       <!-- COLUMN 2: QR CODE -->
-      <div class="card qr-card">
+      <div class="card qr-card" style="margin-bottom: 0;">
         <div class="card-title" style="width:100%">
           <span>📲</span> Quét mã VietQR
         </div>
@@ -437,7 +567,7 @@
       </div>
 
       <!-- ACTIONS: CONFIRMATION -->
-      <div class="card actions-card">
+      <div class="card actions-card" style="margin-bottom: 0;">
         <div class="card-title" style="justify-content: center;">
           <span>✅</span> Xác nhận giao dịch
         </div>
@@ -459,6 +589,18 @@
 
   </main>
 
+  <!-- SUCCESS MODAL -->
+  <div id="payment-success-modal" class="modal" style="display:none">
+    <div class="modal-content" style="text-align: center; max-width: 450px;">
+      <div style="font-size: 60px; color: var(--green); margin-bottom: 16px;">🎉</div>
+      <h3 style="font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 12px;">Đăng ký thành công!</h3>
+      <p style="color: var(--muted); font-size: 15px; line-height: 1.6; margin-bottom: 24px;">
+        Hệ thống đã nhận được thanh toán chuyển khoản từ bạn. Tài khoản học viên của bạn đã được kích hoạt. Võ An sẽ inbox tư vấn lộ trình và kèm cặp trực tiếp cho bạn qua SĐT/Zalo ngay nha!
+      </p>
+      <button class="submit-btn" onclick="window.location.href='/'">QUAY LẠI TRANG CHỦ</button>
+    </div>
+  </div>
+
   <script>
     // 1. DYNAMIC CONFIGURATION BASED ON URL PARAMS
     const urlParams = new URLSearchParams(window.location.search);
@@ -469,46 +611,127 @@
         title: 'Khóa học AI Marketing - Gói Cơ bản',
         promoPrice: 1500000,
         origPrice: 3000000,
-        memo: 'AIMAR COBAN'
       },
       'tieu-chuan': {
         title: 'Khóa học AI Marketing - Gói Tiêu chuẩn',
         promoPrice: 3500000,
         origPrice: 7000000,
-        memo: 'AIMAR TIEUCHUAN'
       },
       'cao-cap': {
         title: 'Khóa học AI Marketing - Gói Cao cấp 1 kèm 1',
         promoPrice: 7500000,
         origPrice: 15000000,
-        memo: 'AIMAR CAOCAP'
       }
     };
 
     const config = packages[selectedGoi] || packages['tieu-chuan'];
 
-    // Update Text Elements
+    // Update Text Elements in Summary
     document.getElementById('pkg-title').textContent = config.title;
     document.getElementById('pkg-price-promo').textContent = formatCurrency(config.promoPrice);
     document.getElementById('pkg-price-orig').textContent = formatCurrency(config.origPrice);
-    document.getElementById('transfer-amount').textContent = formatCurrency(config.promoPrice);
-    document.getElementById('transfer-amount-raw').textContent = config.promoPrice;
-    
-    // Auto-generate transaction ID from time prefix to ensure uniqueness and simplify tracking
-    const randomSuffix = Math.floor(100 + Math.random() * 900); // 3 digits
-    const uniqueMemo = `${config.memo} ${randomSuffix}`;
-    document.getElementById('transfer-memo').textContent = uniqueMemo;
 
-    // 2. DYNAMIC VIETQR GENERATION
-    // Bank config variables
-    const bankId = 'MB'; // MB Bank
-    const accountNo = '0905184871'; // Your account number
-    const accountName = 'VO AN'; // Your account name
+    // Form submission to create order
+    let orderId = null;
+    let pollingInterval = null;
 
-    // VietQR API endpoint format:
-    // https://img.vietqr.io/image/<BANK_ID>-<ACCOUNT_NO>-compact2.jpg?amount=<AMOUNT>&addInfo=<MEMO>&accountName=<ACCOUNT_NAME>
-    const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.jpg?amount=${config.promoPrice}&addInfo=${encodeURIComponent(uniqueMemo)}&accountName=${encodeURIComponent(accountName)}`;
-    document.getElementById('vietqr-img').src = qrUrl;
+    function submitCheckout(e) {
+      e.preventDefault();
+      const btn = document.getElementById('btnSubmitForm');
+      const originalText = btn.innerHTML;
+      btn.disabled = true;
+      btn.innerHTML = '<span>Đang khởi tạo đơn hàng...</span>';
+
+      const customer_name = document.getElementById('txtName').value.trim();
+      const customer_phone = document.getElementById('txtPhone').value.trim();
+      const customer_email = document.getElementById('txtEmail').value.trim();
+
+      fetch('/api/orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          customer_name,
+          customer_phone,
+          customer_email,
+          product_name: config.title,
+          amount: config.promoPrice
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.error) {
+          alert('Khởi tạo đơn hàng thất bại: ' + data.error);
+          btn.disabled = false;
+          btn.innerHTML = originalText;
+          return;
+        }
+
+        orderId = data.id;
+        const memo = data.memo;
+
+        // Update Transfer details
+        document.getElementById('transfer-amount').textContent = formatCurrency(config.promoPrice);
+        document.getElementById('transfer-amount-raw').textContent = config.promoPrice;
+        document.getElementById('transfer-memo').textContent = memo;
+
+        // Bank config
+        const bankId = 'MB'; // MB Bank
+        const accountNo = '0905184871'; // Account number
+        const accountName = 'VO AN'; // Account name
+
+        // Dynamic VietQR generator
+        const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.jpg?amount=${config.promoPrice}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(accountName)}`;
+        document.getElementById('vietqr-img').src = qrUrl;
+
+        // Set Zalo button dynamic link message query
+        const zaloBtn = document.getElementById('zalo-link');
+        const message = `Chào anh Võ An, tôi đã đăng ký khóa học ${config.title}. Mã đơn hàng: ${memo}. Nhờ anh xác nhận kích hoạt giúp tôi!`;
+        zaloBtn.href = `https://zalo.me/0905184871?text=${encodeURIComponent(message)}`;
+        zaloBtn.addEventListener('click', () => {
+          navigator.clipboard.writeText(message).catch(() => {});
+        });
+
+        // Activate Payment Area and scroll into view
+        const paymentGrid = document.getElementById('payment-grid');
+        paymentGrid.classList.add('active');
+        paymentGrid.scrollIntoView({ behavior: 'smooth' });
+
+        // Disable registration form inputs
+        document.getElementById('checkout-form').querySelectorAll('input, button').forEach(el => {
+          el.disabled = true;
+        });
+        btn.innerHTML = '✔️ ĐÃ KHỞI TẠO ĐƠN HÀNG THÀNH CÔNG';
+        btn.style.background = 'var(--green)';
+
+        // Start polling payment status every 3 seconds
+        startPolling(orderId);
+      })
+      .catch(err => {
+        console.error('Checkout error:', err);
+        alert('Đã có lỗi xảy ra. Vui lòng liên hệ hotline Zalo để được hỗ trợ.');
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+      });
+    }
+
+    function startPolling(id) {
+      if (pollingInterval) clearInterval(pollingInterval);
+      pollingInterval = setInterval(() => {
+        fetch(`/api/orders/status?id=${id}`)
+          .then(res => res.json())
+          .then(data => {
+            if (data.status === 'success') {
+              clearInterval(pollingInterval);
+              showSuccessModal();
+            }
+          })
+          .catch(err => console.error('Error polling order status:', err));
+      }, 3000);
+    }
+
+    function showSuccessModal() {
+      document.getElementById('payment-success-modal').style.display = 'flex';
+    }
 
     // 3. PERSISTENT COUNTDOWN TIMER (12 HOURS)
     const COUNTDOWN_DURATION = 12 * 60 * 60 * 1000; // 12 hours in ms
@@ -519,8 +742,6 @@
       localStorage.setItem('countdown_end_time', endTime);
     } else {
       endTime = parseInt(endTime, 10);
-      // If the stored time is already expired, we can reset a new 12h timer
-      // or keep it at 0. Typically for landing pages we reset it for the visitor.
       if (Date.now() > endTime) {
         endTime = Date.now() + COUNTDOWN_DURATION;
         localStorage.setItem('countdown_end_time', endTime);
@@ -560,7 +781,7 @@
       navigator.clipboard.writeText(textToCopy.trim()).then(() => {
         showToast();
       }).catch(err => {
-        console.error('Không thể sao chép văn bản: ', err);
+        console.error('Không thể sao chép: ', err);
       });
     }
 
@@ -571,14 +792,6 @@
         toast.classList.remove('show');
       }, 2500);
     }
-
-    // Set Zalo button dynamic link message query
-    const zaloBtn = document.getElementById('zalo-link');
-    zaloBtn.addEventListener('click', function(e) {
-      // Add custom message prompt in clipboard for convenience if supported
-      const message = `Chào anh Võ An, tôi đã chuyển khoản ${formatCurrency(config.promoPrice)} đăng ký ${config.title}. Mã giao dịch: ${uniqueMemo}. Nhờ anh kích hoạt khóa học giúp tôi!`;
-      navigator.clipboard.writeText(message).catch(() => {});
-    });
   </script>
 </body>
 </html>
