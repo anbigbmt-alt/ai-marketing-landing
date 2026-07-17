@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Đăng ký thành công - AI Marketing Thực Chiến</title>
+  <style>
+    :root {
+      --navy: #0f2947;
+      --blue: #1f6feb;
+      --accent: #ff6b35;
+      --accent2: #ff8c42;
+      --bg: #f6f8fb;
+      --ink: #1b2733;
+      --muted: #5b6b7c;
+      --line: #e3e9f0;
+      --green: #1f9d55;
+      --card-shadow: 0 10px 30px rgba(15, 41, 71, 0.08);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      color: var(--ink);
+      background: var(--bg);
+      line-height: 1.6;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      background: radial-gradient(1200px 500px at 50% -10%, #1c3d63, #0f2947);
+      color: #fff;
+      text-align: center;
+      padding: 30px 20px;
+    }
+
+    .header h1 {
+      font-size: 22px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .success-card {
+      background: #fff;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 50px 40px;
+      box-shadow: var(--card-shadow);
+      text-align: center;
+      max-width: 550px;
+      width: 100%;
+      animation: cardFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes cardFadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .checkmark-container {
+      width: 80px;
+      height: 80px;
+      background: #eafaf1;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 24px;
+      font-size: 40px;
+      color: var(--green);
+      animation: pulseGreen 2s infinite;
+    }
+
+    @keyframes pulseGreen {
+      0% { box-shadow: 0 0 0 0 rgba(31, 157, 85, 0.4); }
+      70% { box-shadow: 0 0 0 15px rgba(31, 157, 85, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(31, 157, 85, 0); }
+    }
+
+    .success-card h2 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--navy);
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+
+    .success-card p {
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+      margin-bottom: 30px;
+    }
+
+    .success-card p b {
+      color: var(--navy);
+    }
+
+    .home-btn {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--accent), var(--accent2));
+      color: #fff;
+      border: none;
+      padding: 16px 36px;
+      border-radius: 50px;
+      font-size: 16px;
+      font-weight: 800;
+      cursor: pointer;
+      text-decoration: none;
+      box-shadow: 0 8px 20px rgba(255, 107, 53, 0.3);
+      transition: all 0.2s;
+    }
+
+    .home-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(255, 107, 53, 0.4);
+    }
+
+    /* FOOTER SUPPORT */
+    .support-footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 13px;
+      color: var(--muted);
+      border-top: 1px solid var(--line);
+      background: #fff;
+    }
+
+    .support-footer a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <header class="header">
+    <h1>Học viện AI Marketing</h1>
+  </header>
+
+  <main class="container">
+    
+    <div class="success-card">
+      <div class="checkmark-container">🎉</div>
+      <h2>ĐĂNG KÝ HỌC THÀNH CÔNG!</h2>
+      <p>
+        Cảm ơn bạn! Hệ thống đã ghi nhận thanh toán tự động và kích hoạt tài khoản học viên của bạn thành công.
+        Mentor <b>Võ An</b> sẽ trực tiếp inbox qua số điện thoại/Zalo để gửi tài liệu học tập và bắt đầu lộ trình kèm cặp cho bạn ngay nha!
+      </p>
+      <a href="/" class="home-btn">QUAY LẠI TRANG CHỦ</a>
+    </div>
+
+  </main>
+
+  <footer class="support-footer">
+    Bạn cần hỗ trợ thêm? Liên hệ Zalo Hotline: <a href="https://zalo.me/0905184871" target="_blank">0905184871</a> (Võ An)
+  </footer>
+
+</body>
+</html>
