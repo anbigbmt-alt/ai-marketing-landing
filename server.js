@@ -80,11 +80,12 @@ app.post('/api/admin/logout', (req, res) => {
 
 // Middleware to protect admin dashboard API endpoints
 const requireAdminAuth = (req, res, next) => {
+  const urlPath = req.originalUrl.split('?')[0];
   // Allow checkout and order status check to be public
-  if (req.path === '/api/orders' && req.method === 'POST') {
+  if (urlPath === '/api/orders' && req.method === 'POST') {
     return next();
   }
-  if (req.path.startsWith('/api/orders/status')) {
+  if (urlPath === '/api/orders/status') {
     return next();
   }
   
