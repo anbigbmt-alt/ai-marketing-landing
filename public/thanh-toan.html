@@ -679,8 +679,8 @@
         const accountNo = '0905184871'; // Account number
         const accountName = 'VO AN'; // Account name
 
-        // Dynamic VietQR generator
-        const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.jpg?amount=${config.promoPrice}&addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(accountName)}`;
+        // Dynamic VietQR generator (amount parameter omitted so customer enters it manually)
+        const qrUrl = `https://img.vietqr.io/image/${bankId}-${accountNo}-compact2.jpg?addInfo=${encodeURIComponent(memo)}&accountName=${encodeURIComponent(accountName)}`;
         document.getElementById('vietqr-img').src = qrUrl;
 
         // Set Zalo button dynamic link message query
