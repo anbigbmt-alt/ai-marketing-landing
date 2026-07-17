@@ -8,6 +8,27 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Simple custom cookie parser middleware (avoids installing node modules)
+app.use((req, res, next) => {
+  req.cookies = {};
+  const rc = req.headers.cookie;
+  if (rc) {
+    rc.split(';').forEach(cookie => {
+      const parts = cookie.split('=');
+      req.cookies[parts.shift().trim()] = decodeURI(parts.join('='));
+    });
+  }
+  next();
+});
+
+// Intercept direct admin.html requests to prevent bypassing authentication
+app.use((req, res, next) => {
+  if (req.path === '/admin.html') {
+    return res.redirect('/admin');
+  }
+  next();
+});
+
 // Serve static files from the public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -21,10 +42,64 @@ const db = new sqlite3.Database(dbPath, (err) => {
   }
 });
 
-// Serve Admin Panel static page
+// Serve Admin Panel with authentication protection
 app.get('/admin', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  if (req.cookies.admin_session === 'authenticated_secret_token') {
+    res.sendFile(path.join(__dirname, 'public', 'admin.html'));
+  } else {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+  }
 });
+
+// Admin Login API
+app.post('/api/admin/login', (req, res) => {
+  const { username, password } = req.body;
+  // Account details: admin / anvoai247
+  if (username === 'admin' && password === 'anvoai247') {
+    res.cookie('admin_session', 'authenticated_secret_token', {
+      path: '/',
+      httpOnly: true,
+      maxAge: 86400 * 1000, // 24 hours
+      sameSite: 'strict'
+    });
+    return res.json({ success: true });
+  } else {
+    return res.status(401).json({ success: false, error: 'Sai tài khoản hoặc mật khẩu' });
+  }
+});
+
+// Admin Logout API
+app.post('/api/admin/logout', (req, res) => {
+  res.cookie('admin_session', '', {
+    path: '/',
+    expires: new Date(0),
+    httpOnly: true
+  });
+  res.json({ success: true });
+});
+
+// Middleware to protect admin dashboard API endpoints
+const requireAdminAuth = (req, res, next) => {
+  // Allow checkout and order status check to be public
+  if (req.path === '/api/orders' && req.method === 'POST') {
+    return next();
+  }
+  if (req.path.startsWith('/api/orders/status')) {
+    return next();
+  }
+  
+  // Check cookie authentication
+  if (req.cookies.admin_session === 'authenticated_secret_token') {
+    next();
+  } else {
+    res.status(401).json({ error: 'Unauthorized: Bạn cần đăng nhập admin' });
+  }
+};
+
+// Apply auth protection for selective API routes
+app.use('/api/products', requireAdminAuth);
+app.use('/api/customers', requireAdminAuth);
+app.use('/api/orders', requireAdminAuth);
 
 // ================= API PRODUCTS =================
 app.get('/api/products', (req, res) => {

@@ -378,8 +378,9 @@
       <h1>AI Marketing</h1>
       <span>CRM Panel</span>
     </div>
-    <div class="nav-links">
-      <a href="/" target="_blank">Xem Website ↗</a>
+    <div class="nav-links" style="display: flex; align-items: center; gap: 20px;">
+      <a href="/" target="_blank" style="color: #cbd5e1; text-decoration: none; font-weight: 600; font-size: 14px;">Xem Website ↗</a>
+      <button onclick="handleLogout()" style="background: none; border: 1px solid rgba(255,255,255,0.3); color: #cbd5e1; padding: 6px 12px; border-radius: 6px; font-weight: 600; font-size: 13px; cursor: pointer; transition: all 0.2s;" onmouseover="this.style.color='#fff'; this.style.borderColor='#fff';" onmouseout="this.style.color='#cbd5e1'; this.style.borderColor='rgba(255,255,255,0.3)';">Đăng xuất</button>
     </div>
   </header>
 
@@ -965,6 +966,12 @@
     // ================= GLOBAL HELPERS =================
     function closeModal(modalType) {
       document.getElementById(`${modalType}-modal`).classList.remove('show');
+    }
+
+    function handleLogout() {
+      fetch('/api/admin/logout', { method: 'POST' }).then(() => {
+        window.location.reload();
+      });
     }
   </script>
 </body>
