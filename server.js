@@ -21,7 +21,28 @@ try {
 }
 
 // Generate Email HTML Templates
-function getEmailTemplate(type, name) {
+function getEmailTemplate(type, name, data = {}) {
+  const productName = data.product_name || 'Khóa học AI Marketing Thực Chiến';
+  const amount = data.amount || 0;
+  const status = data.status || 'success';
+  const formattedAmount = Number(amount).toLocaleString('vi-VN') + ' đ';
+  const statusText = status === 'success' ? 'Đã thanh toán thành công (Thành viên chính thức)' : 'Chờ thanh toán (Đang xử lý)';
+  
+  let instructions = '';
+  if (status === 'success') {
+    if (productName.includes('Cơ bản') || productName.toLowerCase().includes('coban')) {
+      instructions = 'Hệ thống đã kích hoạt quyền truy cập của bạn vào gói <b>Cơ bản</b>. Bạn sẽ nhận được email hướng dẫn đăng nhập học qua video 8 module và link tải các mẫu Prompts marketing thực chiến trong vòng 5-10 phút nữa nhé.';
+    } else if (productName.includes('Tiêu chuẩn') || productName.toLowerCase().includes('tieu-chuan') || productName.toLowerCase().includes('tieuchuan')) {
+      instructions = 'Hệ thống đã kích hoạt quyền truy cập gói <b>Tiêu chuẩn</b>. Bạn hãy kết nối Zalo trực tiếp với An qua số 0905184871 để An gửi tài khoản học qua video, link tham gia live Q&A hàng tuần và duyệt bạn vào nhóm hỗ trợ học viên nhé.';
+    } else if (productName.includes('Cao cấp') || productName.toLowerCase().includes('caocap')) {
+      instructions = 'Chúc mừng bạn đã sở hữu gói kèm cặp <b>1-1 đặc quyền</b> từ Võ An. Vui lòng kết nối Zalo với An qua số 0905184871 ngay để chúng ta đặt lịch Zoom buổi đầu tiên, bắt đầu phân tích và tối ưu hóa hệ thống marketing riêng cho shop của bạn nhé.';
+    } else {
+      instructions = 'Hệ thống đã kích hoạt đơn hàng của bạn thành công. Vui lòng kết nối trực tiếp qua Zalo với An qua số 0905184871 để nhận tài liệu học tập và hướng dẫn kích hoạt tài khoản của bạn nhé.';
+    }
+  } else {
+    instructions = 'Đơn hàng của bạn đang ở trạng thái chờ thanh toán. Vui lòng hoàn tất chuyển khoản theo hướng dẫn thanh toán để An kích hoạt tài khoản học cho bạn nhé. Nếu bạn cần hỗ trợ gì thêm, cứ nhắn Zalo trực tiếp cho An qua số 0905184871, An rep liền.';
+  }
+
   const templates = {
     welcome: {
       subject: `Alo ${name} ơi, An nghe nè! 💬`,
@@ -77,21 +98,29 @@ function getEmailTemplate(type, name) {
       `
     },
     order_success: {
-      subject: `Xác nhận đăng ký học thành công! 🎉 (AI Marketing Thực Chiến)`,
+      subject: status === 'success' ? `Xác nhận đăng ký học thành công! 🎉 (AI Marketing Thực Chiến)` : `Xác nhận đơn hàng đang xử lý ⏳ (AI Marketing Thực Chiến)`,
       html: `
-        <div style="font-family: sans-serif; font-size: 15px; color: #1b2733; line-height: 1.6; max-width: 600px;">
-          <p>Chào <b>${name}</b> nha, Võ An đây!</p>
-          <p>An viết thư này để xác nhận hệ thống đã nhận được học phí đăng ký khóa học của bạn thành công.</p>
-          <p>Tài khoản học viên của bạn đã được kích hoạt trên hệ thống. Dưới đây là thông tin đơn hàng của bạn:</p>
+        <div style="font-family: sans-serif; font-size: 15px; color: #1b2733; line-height: 1.6; max-width: 600px; margin: 0 auto; border: 1px solid #e3e9f0; padding: 30px; border-radius: 12px; background-color: #ffffff;">
+          <p>Chào <b>${name}</b> nha, Võ An đây! 👋</p>
+          <p>Cảm ơn bạn rất nhiều vì đã tin tưởng đăng ký tham gia khóa học AI Marketing Thực Chiến của An. Hệ thống của An đã ghi nhận đơn hàng của bạn thành công rồi hen.</p>
+          
+          <p>Dưới đây là thông tin chi tiết đơn hàng của bạn:</p>
           <div style="background: #f6f8fb; border: 1px solid #e3e9f0; padding: 18px; border-radius: 12px; margin: 18px 0;">
             <p style="margin: 4px 0;"><b>Học viên:</b> ${name}</p>
-            <p style="margin: 4px 0;"><b>Trạng thái:</b> Đã thanh toán thành công (Thành viên chính thức)</p>
+            <p style="margin: 4px 0;"><b>Khóa học:</b> ${productName}</p>
+            <p style="margin: 4px 0;"><b>Học phí:</b> <span style="color: #ff6b35; font-weight: bold;">${formattedAmount}</span></p>
+            <p style="margin: 4px 0;"><b>Trạng thái:</b> ${statusText}</p>
           </div>
-          <p>Bây giờ bạn hãy kết nối trực tiếp qua Zalo với An để nhận tài liệu hướng dẫn bắt đầu lộ trình học và kèm cặp nha:</p>
-          <p style="margin: 25px 0;">
-            <a href="https://zalo.me/0905184871" target="_blank" style="background: #1f9d55; color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: bold; display: inline-block; box-shadow: 0 4px 12px rgba(31,157,85,0.3);">💬 LIÊN HỆ ZALO: 0905184871</a>
+
+          <h3 style="color: #2c3e50; margin-top: 25px;">🚀 Hướng dẫn nhận học liệu và kích hoạt:</h3>
+          <p>${instructions}</p>
+
+          <p style="margin: 25px 0; text-align: center;">
+            <a href="https://zalo.me/0905184871" target="_blank" style="background: #1f9d55; color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: bold; display: inline-block; box-shadow: 0 4px 12px rgba(31,157,85,0.3);">💬 LIÊN HỆ ZALO AN NGAY: 0905184871</a>
           </p>
-          <p>Rất vui được đồng hành cùng bạn trên con đường làm chủ AI!</p>
+
+          <p>An tin rằng với sự hỗ trợ của AI, việc viết bài ra đơn hay thiết kế ảnh sản phẩm của shop bạn sẽ nhanh và nhàn hơn rất nhiều. Hẹn gặp bạn trong lớp học nhé!</p>
+          <p>Chúc shop của bạn luôn bão đơn!</p>
           <hr style="border: none; border-top: 1px solid #e3e9f0; margin: 20px 0;">
           <p style="font-size: 12px; color: #5b6b7c;">Học viện AI Marketing — Võ An (0905184871)</p>
         </div>
@@ -160,15 +189,85 @@ async function triggerScheduledEmail(row) {
 
 // Trigger Order Success Confirmation Email
 function triggerOrderSuccessEmail(orderId) {
-  db.get('SELECT customer_name, customer_email, product_name, amount FROM orders WHERE id = ?', [orderId], (err, order) => {
+  db.get('SELECT customer_name, customer_phone, customer_email, product_name, amount, status FROM orders WHERE id = ?', [orderId], (err, order) => {
     if (err || !order || !order.customer_email) return;
     
-    console.log(`Triggering order success email to ${order.customer_email} for order ${orderId}`);
-    const t = getEmailTemplate('order_success', order.customer_name);
+    console.log(`Triggering order email to ${order.customer_email} for order ${orderId}`);
+    const t = getEmailTemplate('order_success', order.customer_name, {
+      product_name: order.product_name,
+      amount: order.amount,
+      status: order.status
+    });
     sendEmail({
       to: order.customer_email,
       subject: t.subject,
       html: t.html
+    });
+
+    // Automatically enroll customer in the email sequence
+    const email = order.customer_email;
+    const phone = order.customer_phone || '';
+    const name = order.customer_name;
+    const created_at = new Date().toISOString();
+
+    db.get('SELECT id FROM customers WHERE email = ?', [email], (custErr, customer) => {
+      if (custErr) return;
+
+      const setupSequence = (customerId) => {
+        // Check if they already have scheduled emails to avoid duplicate enrollment
+        db.get('SELECT id FROM scheduled_emails WHERE customer_id = ?', [customerId], (schedErr, sched) => {
+          if (!schedErr && !sched) {
+            if (email.toLowerCase().includes('+test')) {
+              console.log(`[Resend Test Mode] Triggering sequence instantly for customer ${customerId}: ${email}`);
+              
+              // Welcome instantly
+              const wT = getEmailTemplate('welcome', name);
+              sendEmail({ to: email, subject: wT.subject, html: wT.html });
+
+              // Nurture 2s later
+              setTimeout(() => {
+                const nT = getEmailTemplate('nurture', name);
+                sendEmail({ to: email, subject: nT.subject, html: nT.html });
+              }, 2000);
+
+              // Closing 4s later
+              setTimeout(() => {
+                const cT = getEmailTemplate('closing', name);
+                sendEmail({ to: email, subject: cT.subject, html: cT.html });
+              }, 4000);
+            } else {
+              // Normal Mode: Welcome instantly
+              const wT = getEmailTemplate('welcome', name);
+              sendEmail({ to: email, subject: wT.subject, html: wT.html });
+
+              // Schedule Nurture (2 days later)
+              const twoDaysLater = new Date();
+              twoDaysLater.setDate(twoDaysLater.getDate() + 2);
+
+              // Schedule Closing (3 days later - which is 1 day after Nurture)
+              const threeDaysLater = new Date();
+              threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+
+              db.run("INSERT INTO scheduled_emails (customer_id, email_type, scheduled_at) VALUES (?, 'nurture', ?)", [customerId, twoDaysLater.toISOString()]);
+              db.run("INSERT INTO scheduled_emails (customer_id, email_type, scheduled_at) VALUES (?, 'closing', ?)", [customerId, threeDaysLater.toISOString()]);
+            }
+          }
+        });
+      };
+
+      if (customer) {
+        setupSequence(customer.id);
+      } else {
+        // Create new customer record
+        db.run('INSERT INTO customers (name, phone, zalo, email, created_at) VALUES (?, ?, ?, ?, ?)',
+          [name, phone, phone, email, created_at],
+          function (insertErr) {
+            if (!insertErr) {
+              setupSequence(this.lastID);
+            }
+          }
+        );
+      }
     });
   });
 }
@@ -479,6 +578,11 @@ app.post('/api/orders', (req, res) => {
       // 3. Subtract inventory if adding directly as a successful physical order
       if (status === 'success') {
         subtractInventory(product_name, 1);
+      }
+
+      // Trigger email if the order is success OR if the order was created by the admin
+      const isAdmin = req.cookies.admin_session === 'authenticated_secret_token';
+      if (status === 'success' || isAdmin) {
         triggerOrderSuccessEmail(orderId);
       }
       
