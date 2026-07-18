@@ -390,9 +390,15 @@
         <input type="tel" id="txtPhone" name="entry.755693769" required placeholder="Nhập số điện thoại Zalo..." style="width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid var(--line); font-size: 15px; outline: none; transition: border-color 0.2s;">
       </div>
 
+      <!-- Địa chỉ Email -->
+      <div class="form-group">
+        <label for="txtEmail" style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 8px; font-size: 15px;">3. Địa chỉ Email của bạn là gì? <span style="color: var(--accent);">*</span></label>
+        <input type="email" id="txtEmail" required placeholder="Nhập địa chỉ email của bạn..." style="width: 100%; padding: 14px 18px; border-radius: 12px; border: 1.5px solid var(--line); font-size: 15px; outline: none; transition: border-color 0.2s;">
+      </div>
+
       <!-- Bạn đang kinh doanh gì -->
       <div class="form-group">
-        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">3. Bạn đang kinh doanh ngành hàng nào? <span style="color: var(--accent);">*</span></label>
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">4. Bạn đang kinh doanh ngành hàng nào? <span style="color: var(--accent);">*</span></label>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
           <label class="option-card">
             <input type="radio" name="entry.1051473499" value="Thời trang" required>
@@ -419,7 +425,7 @@
 
       <!-- Việc marketing đau đầu nhất -->
       <div class="form-group">
-        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">4. Việc marketing nào đang khiến bạn đau đầu nhất? (Chọn nhiều) <span style="color: var(--accent);">*</span></label>
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">5. Việc marketing nào đang khiến bạn đau đầu nhất? (Chọn nhiều) <span style="color: var(--accent);">*</span></label>
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <label class="option-card long">
             <input type="checkbox" name="entry.965291000" value="Không biết đăng gì mỗi ngày">
@@ -450,7 +456,7 @@
 
       <!-- Mức độ dùng AI -->
       <div class="form-group">
-        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">5. Hiện tại bạn đang dùng AI để làm marketing ở mức nào? <span style="color: var(--accent);">*</span></label>
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">6. Hiện tại bạn đang dùng AI để làm marketing ở mức nào? <span style="color: var(--accent);">*</span></label>
         <div style="display: flex; flex-direction: column; gap: 10px;">
           <label class="option-card long">
             <input type="radio" name="entry.89806194" value="Chưa dùng bao giờ" required>
@@ -469,7 +475,7 @@
 
       <!-- Muốn bắt đầu khi nào -->
       <div class="form-group">
-        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">6. Nếu có giải pháp phù hợp, bạn muốn bắt đầu khi nào? <span style="color: var(--accent);">*</span></label>
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">7. Nếu có giải pháp phù hợp, bạn muốn bắt đầu khi nào? <span style="color: var(--accent);">*</span></label>
         <div style="display: flex; gap: 16px; flex-wrap: wrap;">
           <label class="option-card" style="flex: 1; min-width: 150px;">
             <input type="radio" name="entry.1473271076" value="Ngay bây giờ" required>
@@ -488,7 +494,7 @@
 
       <!-- Bạn thường bán hàng ở kênh nào -->
       <div class="form-group">
-        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">7. Bạn thường bán hàng ở những kênh nào? (Chọn nhiều) <span style="color: var(--accent);">*</span></label>
+        <label style="display: block; font-weight: 700; color: var(--navy); margin-bottom: 12px; font-size: 15px;">8. Bạn thường bán hàng ở những kênh nào? (Chọn nhiều) <span style="color: var(--accent);">*</span></label>
         <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px;">
           <label class="option-card">
             <input type="checkbox" name="entry.972226849" value="Facebook">
@@ -649,11 +655,26 @@
     // Post to Google Forms formResponse URL in background
     const formUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfad9sAbpoOBUepfWxsCsr1SPmuhPpZbmVJospppQ6DxI5m9g/formResponse';
     
-    fetch(formUrl, {
+    // 1. Post to local CRM API
+    const localPost = fetch('/api/customers', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: document.getElementById('txtName').value,
+        phone: document.getElementById('txtPhone').value,
+        email: document.getElementById('txtEmail').value,
+        zalo: document.getElementById('txtPhone').value // default Zalo to phone
+      })
+    });
+
+    // 2. Post to Google Forms (original)
+    const googlePost = fetch(formUrl, {
       method: 'POST',
       mode: 'no-cors',
       body: formData
-    })
+    }).catch(err => console.warn('Google Form submit error:', err));
+
+    Promise.all([localPost, googlePost])
     .then(() => {
       // Show Success Modal
       document.getElementById('successModal').style.display = 'flex';

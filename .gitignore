@@ -6,3 +6,4 @@ git_push_helper.py
 git_push_helper_out.txt
 *.tmp
 .~lock.*
+resend_config.txt

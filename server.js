@@ -1,8 +1,200 @@
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
+const fs = require('fs');
+
 const app = express();
 const PORT = process.env.PORT || 3000;
+
+// Read Resend API Key from resend_config.txt
+let resendApiKey = '';
+try {
+  const configPath = path.join(__dirname, 'resend_config.txt');
+  if (fs.existsSync(configPath)) {
+    resendApiKey = fs.readFileSync(configPath, 'utf8').trim();
+    console.log('Loaded Resend API Key:', resendApiKey ? 'Yes' : 'Empty');
+  } else {
+    console.log('resend_config.txt not found. Resend will run in Mock Mode.');
+  }
+} catch (err) {
+  console.error('Error reading resend_config.txt:', err);
+}
+
+// Generate Email HTML Templates
+function getEmailTemplate(type, name) {
+  const templates = {
+    welcome: {
+      subject: `Alo ${name} ơi, An nghe nè! 💬`,
+      html: `
+        <div style="font-family: sans-serif; font-size: 15px; color: #1b2733; line-height: 1.6; max-width: 600px;">
+          <p>Chào <b>${name}</b> nha, An đây!</p>
+          <p>Cảm ơn bạn đã tin tưởng đăng ký nhận tư vấn và tài liệu về khóa học AI Marketing Thực Chiến của An.</p>
+          <p>Thật ra, nhiều bạn trước khi đến với An hay than thở là "mù công nghệ", k biết bắt đầu từ đâu, rồi sợ văn AI viết nghe sáo rỗng, công nghiệp.</p>
+          <p>Nhưng đơn giản thôi bạn ơi! Nếu bạn nhắn tin Zalo hay lướt Facebook được là bạn học được. Trong khóa học, An chỉ dạy đúng 3 thứ thiết yếu: viết content ra đơn, làm hình đẹp và chạy ads k đốt tiền. Mỗi ngày chỉ tốn dưới 30 phút, chi phí gần như bằng 0.</p>
+          <p>An sẽ gửi thêm một số mẹo thực chiến cực hay vào email cho bạn trong 1-2 ngày tới. Cứ đợi thư An nha!</p>
+          <p>Cần gì gấp cứ nhắn tin Zalo trực tiếp cho An qua số 0905184871 hen. An sẽ ib tư vấn lộ trình phù hợp nhất cho shop của bạn.</p>
+          <hr style="border: none; border-top: 1px solid #e3e9f0; margin: 20px 0;">
+          <p style="font-size: 12px; color: #5b6b7c;">Học viện AI Marketing — Võ An (0905184871)</p>
+        </div>
+      `
+    },
+    nurture: {
+      subject: `Đừng viết content kiểu "văn mẫu" nữa... (Mẹo viết bài như người thật) ✍️`,
+      html: `
+        <div style="font-family: sans-serif; font-size: 15px; color: #1b2733; line-height: 1.6; max-width: 600px;">
+          <p>Alo <b>${name}</b> ơi, An đây!</p>
+          <p>Hôm nay An chia sẻ nhanh cho bạn 1 mẹo nhỏ mà An hay làm để dạy AI viết bài y hệt như người thật viết, k bị giả tạo hay mang giọng "công nghiệp" nha.</p>
+          <p>Bình thường mọi người hay lên mạng gõ đại: "Viết bài giới thiệu sản phẩm A". Kết quả là AI sẽ phun ra một đống từ sáo rỗng như: "chào mừng bạn đến với", "tối ưu hóa trải nghiệm", "chúng tôi tự hào"... Khách hàng đọc phát biết ngay AI viết, họ lướt qua liền!</p>
+          <p>Cách làm của An đơn giản thế này:</p>
+          <p>Trước khi bắt AI viết, bạn hãy gửi cho nó 2-3 bài viết cũ mà bạn tự viết (hoặc bài bạn thấy hay) và ra lệnh cho nó:</p>
+          <blockquote style="border-left: 4px solid #1f6feb; padding-left: 15px; margin: 15px 0; color: #5b6b7c;">
+            "Đây là phong cách viết của tôi. Hãy đọc kỹ cách dùng từ, cách ngắt câu và xưng hô. Sau đó, viết bài mới dựa theo đúng phong cách này."
+          </blockquote>
+          <p>Chỉ một mẹo nhỏ vậy thôi nhưng văn phong AI viết ra sẽ tự nhiên, đời thường và giống giọng của bạn đến 90%. Bạn thử xem nha!</p>
+          <p>Hẹn gặp lại bạn ở email tiếp theo, An sẽ chỉ cho bạn cách làm ảnh sản phẩm cực đẹp bằng AI mà k tốn 1 cắc thuê thiết kế.</p>
+          <hr style="border: none; border-top: 1px solid #e3e9f0; margin: 20px 0;">
+          <p style="font-size: 12px; color: #5b6b7c;">Học viện AI Marketing — Võ An (0905184871)</p>
+        </div>
+      `
+    },
+    closing: {
+      subject: `Bỏ 3.5 triệu 1 lần, dùng cả đời — thay vì thuê ngoài tốn kém? 💰`,
+      html: `
+        <div style="font-family: sans-serif; font-size: 15px; color: #1b2733; line-height: 1.6; max-width: 600px;">
+          <p>Alo <b>${name}</b> ơi, lại là An đây!</p>
+          <p>Mấy hôm nay An chia sẻ chắc bạn cũng thấy làm marketing bằng AI k hề phức tạp đúng k?</p>
+          <p>Thay vì bạn tốn 5-10 triệu/tháng thuê người làm content hay chạy ads, bạn hoàn toàn có thể tự làm 1 mình nhờ AI hỗ trợ.</p>
+          <p>An khuyên bạn nên chọn <b>Gói Tiêu chuẩn (3.500.000đ)</b> — gói này được nhiều chủ shop chọn nhất vì có An đi cùng giải đáp Q&A hàng tuần và cộng đồng học viên hỗ trợ. Trả tiền 1 lần, dùng cả đời, k phát sinh chi phí.</p>
+          <p>Bạn bấm vào đây để đăng ký giữ suất học ưu đãi giảm giá 50% nha:</p>
+          <p style="margin: 25px 0;">
+            <a href="https://aiwithsme.com/thanh-toan.html?goi=tieu-chuan" target="_blank" style="background: linear-gradient(135deg, #ff6b35, #ff8c42); color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: bold; display: inline-block; box-shadow: 0 4px 12px rgba(255,107,53,0.35);">👉 ĐĂNG KÝ HỌC NGAY</a>
+          </p>
+          <p>Cần An tư vấn thêm gói nào phù hợp nhất cho shop của bạn thì cứ Zalo trực tiếp cho An (0905184871) nha, An rep liền.</p>
+          <p>Chúc shop của bạn luôn bão đơn!</p>
+          <hr style="border: none; border-top: 1px solid #e3e9f0; margin: 20px 0;">
+          <p style="font-size: 12px; color: #5b6b7c;">Học viện AI Marketing — Võ An (0905184871)</p>
+        </div>
+      `
+    },
+    order_success: {
+      subject: `Xác nhận đăng ký học thành công! 🎉 (AI Marketing Thực Chiến)`,
+      html: `
+        <div style="font-family: sans-serif; font-size: 15px; color: #1b2733; line-height: 1.6; max-width: 600px;">
+          <p>Chào <b>${name}</b> nha, Võ An đây!</p>
+          <p>An viết thư này để xác nhận hệ thống đã nhận được học phí đăng ký khóa học của bạn thành công.</p>
+          <p>Tài khoản học viên của bạn đã được kích hoạt trên hệ thống. Dưới đây là thông tin đơn hàng của bạn:</p>
+          <div style="background: #f6f8fb; border: 1px solid #e3e9f0; padding: 18px; border-radius: 12px; margin: 18px 0;">
+            <p style="margin: 4px 0;"><b>Học viên:</b> ${name}</p>
+            <p style="margin: 4px 0;"><b>Trạng thái:</b> Đã thanh toán thành công (Thành viên chính thức)</p>
+          </div>
+          <p>Bây giờ bạn hãy kết nối trực tiếp qua Zalo với An để nhận tài liệu hướng dẫn bắt đầu lộ trình học và kèm cặp nha:</p>
+          <p style="margin: 25px 0;">
+            <a href="https://zalo.me/0905184871" target="_blank" style="background: #1f9d55; color: #fff; text-decoration: none; padding: 14px 28px; border-radius: 50px; font-weight: bold; display: inline-block; box-shadow: 0 4px 12px rgba(31,157,85,0.3);">💬 LIÊN HỆ ZALO: 0905184871</a>
+          </p>
+          <p>Rất vui được đồng hành cùng bạn trên con đường làm chủ AI!</p>
+          <hr style="border: none; border-top: 1px solid #e3e9f0; margin: 20px 0;">
+          <p style="font-size: 12px; color: #5b6b7c;">Học viện AI Marketing — Võ An (0905184871)</p>
+        </div>
+      `
+    }
+  };
+  return templates[type];
+}
+
+// Send Email via Resend REST API
+async function sendEmail({ to, subject, html }) {
+  if (!resendApiKey || resendApiKey.includes('placeholder') || resendApiKey.startsWith('re_12')) {
+    console.log(`[Resend Mock Mode] Sending Email to: ${to}`);
+    console.log(`Subject: ${subject}`);
+    console.log(`Body (Preview): ${html.substring(0, 100).replace(/<[^>]*>/g, '')}...`);
+    return { success: true, mock: true };
+  }
+
+  try {
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        from: 'Võ An <hi@aiwithsme.com>',
+        to,
+        subject,
+        html
+      })
+    });
+
+    const data = await response.json();
+    if (response.ok) {
+      console.log(`Email sent successfully via Resend to ${to}:`, data);
+      return { success: true, id: data.id };
+    } else {
+      console.error(`Resend API Error sending to ${to}:`, data);
+      return { success: false, error: data };
+    }
+  } catch (err) {
+    console.error(`Fetch error sending email to ${to}:`, err);
+    return { success: false, error: err.message };
+  }
+}
+
+// Trigger Single Scheduled Email
+async function triggerScheduledEmail(row) {
+  const template = getEmailTemplate(row.email_type, row.name);
+  if (!template) {
+    db.run("UPDATE scheduled_emails SET status = 'failed' WHERE id = ?", [row.id]);
+    return;
+  }
+  
+  const res = await sendEmail({
+    to: row.email,
+    subject: template.subject,
+    html: template.html
+  });
+  
+  const status = res.success ? 'sent' : 'failed';
+  const sent_at = new Date().toISOString();
+  db.run("UPDATE scheduled_emails SET status = ?, sent_at = ? WHERE id = ?", [status, sent_at, row.id]);
+}
+
+// Trigger Order Success Confirmation Email
+function triggerOrderSuccessEmail(orderId) {
+  db.get('SELECT customer_name, customer_email, product_name, amount FROM orders WHERE id = ?', [orderId], (err, order) => {
+    if (err || !order || !order.customer_email) return;
+    
+    console.log(`Triggering order success email to ${order.customer_email} for order ${orderId}`);
+    const t = getEmailTemplate('order_success', order.customer_name);
+    sendEmail({
+      to: order.customer_email,
+      subject: t.subject,
+      html: t.html
+    });
+  });
+}
+
+// Background scheduler interval (checks every 1 minute)
+setInterval(() => {
+  const now = new Date().toISOString();
+  db.all(
+    "SELECT s.id, s.customer_id, s.email_type, c.name, c.email FROM scheduled_emails s JOIN customers c ON s.customer_id = c.id WHERE s.status = 'pending' AND s.scheduled_at <= ?",
+    [now],
+    (err, rows) => {
+      if (err) {
+        console.error('Error checking scheduled emails:', err);
+        return;
+      }
+      
+      rows.forEach(row => {
+        // Mark as in-progress / sending to prevent double-sends
+        db.run("UPDATE scheduled_emails SET status = 'sending' WHERE id = ?", [row.id], (updateErr) => {
+          if (updateErr) return;
+          triggerScheduledEmail(row);
+        });
+      });
+    }
+  );
+}, 60000);
 
 // Middleware to parse JSON and URL-encoded bodies
 app.use(express.json());
@@ -39,6 +231,17 @@ const db = new sqlite3.Database(dbPath, (err) => {
     console.error('Could not connect to database:', err);
   } else {
     console.log('Connected to SQLite database: brain.db');
+    // Ensure scheduled_emails table exists for Day 11 sequence email marketing
+    db.run(`
+      CREATE TABLE IF NOT EXISTS scheduled_emails (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER,
+        email_type TEXT,
+        scheduled_at TEXT,
+        sent_at TEXT,
+        status TEXT DEFAULT 'pending'
+      )
+    `);
   }
 });
 
@@ -86,6 +289,10 @@ const requireAdminAuth = (req, res, next) => {
     return next();
   }
   if (urlPath === '/api/orders/status') {
+    return next();
+  }
+  // Allow public waitlist registrations
+  if (urlPath === '/api/customers' && req.method === 'POST') {
     return next();
   }
   
@@ -151,7 +358,48 @@ app.post('/api/customers', (req, res) => {
   const sql = 'INSERT INTO customers (name, phone, zalo, email, created_at) VALUES (?, ?, ?, ?, ?)';
   db.run(sql, [name, phone, zalo, email, created_at], function(err) {
     if (err) return res.status(500).json({ error: err.message });
-    res.json({ id: this.lastID, name, phone, zalo, email, created_at });
+    const customerId = this.lastID;
+
+    if (email) {
+      // Check for +test email trigger
+      if (email.toLowerCase().includes('+test')) {
+        console.log(`[Resend Test Mode] Triggering sequence instantly for: ${email}`);
+        
+        // Welcome instantly
+        const wT = getEmailTemplate('welcome', name);
+        sendEmail({ to: email, subject: wT.subject, html: wT.html });
+
+        // Nurture 2s later
+        setTimeout(() => {
+          const nT = getEmailTemplate('nurture', name);
+          sendEmail({ to: email, subject: nT.subject, html: nT.html });
+        }, 2000);
+
+        // Closing 4s later
+        setTimeout(() => {
+          const cT = getEmailTemplate('closing', name);
+          sendEmail({ to: email, subject: cT.subject, html: cT.html });
+        }, 4000);
+
+      } else {
+        // Normal Mode: Welcome instantly
+        const wT = getEmailTemplate('welcome', name);
+        sendEmail({ to: email, subject: wT.subject, html: wT.html });
+
+        // Schedule Nurture (2 days later)
+        const twoDaysLater = new Date();
+        twoDaysLater.setDate(twoDaysLater.getDate() + 2);
+
+        // Schedule Closing (3 days later - which is 1 day after Nurture)
+        const threeDaysLater = new Date();
+        threeDaysLater.setDate(threeDaysLater.getDate() + 3);
+
+        db.run("INSERT INTO scheduled_emails (customer_id, email_type, scheduled_at) VALUES (?, 'nurture', ?)", [customerId, twoDaysLater.toISOString()]);
+        db.run("INSERT INTO scheduled_emails (customer_id, email_type, scheduled_at) VALUES (?, 'closing', ?)", [customerId, threeDaysLater.toISOString()]);
+      }
+    }
+
+    res.json({ id: customerId, name, phone, zalo, email, created_at });
   });
 });
 
@@ -231,6 +479,7 @@ app.post('/api/orders', (req, res) => {
       // 3. Subtract inventory if adding directly as a successful physical order
       if (status === 'success') {
         subtractInventory(product_name, 1);
+        triggerOrderSuccessEmail(orderId);
       }
       
       // 4. Save/update customer info in parallel if phone is provided
@@ -261,9 +510,10 @@ app.put('/api/orders/:id', (req, res) => {
     db.run(sql, [customer_name, customer_phone, customer_email, product_name, amount, status, memo, id], function(err) {
       if (err) return res.status(500).json({ error: err.message });
       
-      // If order transitions to success from non-success, subtract inventory
+      // If order transitions to success from non-success, subtract inventory & email customer
       if (status === 'success' && oldOrder.status !== 'success') {
         subtractInventory(product_name, 1);
+        triggerOrderSuccessEmail(id);
       }
       
       res.json({ success: true });
@@ -326,6 +576,7 @@ app.post('/api/sepay-webhook', (req, res) => {
         
         // Subtract inventory if physical product
         subtractInventory(matchedOrder.product_name, 1);
+        triggerOrderSuccessEmail(matchedOrder.id);
         
         return res.json({ success: true, message: `Order ${matchedOrder.id} marked as success` });
       });
