@@ -7,3 +7,7 @@ git_push_helper_out.txt
 *.tmp
 .~lock.*
 resend_config.txt
+.env
+brain_backup.db
+*.db.bak
+brain.db

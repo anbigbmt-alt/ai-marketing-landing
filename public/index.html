@@ -610,6 +610,25 @@
     const submitBtn = form.querySelector('button[type="submit"]');
     const originalText = submitBtn.innerHTML;
     
+    const phone = document.getElementById('txtPhone').value.trim();
+    const email = document.getElementById('txtEmail').value.trim();
+
+    // Phone validation (Vietnamese mobile format: 10 digits starting with 03, 05, 07, 08, 09)
+    const phoneRegex = /^(0[3|5|7|8|9][0-9]{8})$/;
+    if (!phoneRegex.test(phone)) {
+      alert('Vui lòng nhập số điện thoại hợp lệ gồm 10 chữ số (ví dụ: 0905123456).');
+      document.getElementById('txtPhone').focus();
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(email)) {
+      alert('Vui lòng nhập địa chỉ email hợp lệ (ví dụ: name@example.com).');
+      document.getElementById('txtEmail').focus();
+      return;
+    }
+
     // Change button state to loading
     submitBtn.disabled = true;
     submitBtn.innerHTML = '<span>Đang gửi đăng ký...</span>';

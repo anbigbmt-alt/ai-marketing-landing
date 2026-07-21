@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const sqlite3 = require('sqlite3').verbose();
@@ -6,18 +7,27 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Read Resend API Key from resend_config.txt
-let resendApiKey = '';
-try {
-  const configPath = path.join(__dirname, 'resend_config.txt');
-  if (fs.existsSync(configPath)) {
-    resendApiKey = fs.readFileSync(configPath, 'utf8').trim();
-    console.log('Loaded Resend API Key:', resendApiKey ? 'Yes' : 'Empty');
-  } else {
-    console.log('resend_config.txt not found. Resend will run in Mock Mode.');
+// Load config from environment variables
+const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'anvoai247';
+const ADMIN_SESSION_TOKEN = process.env.ADMIN_SESSION_TOKEN || 'authenticated_secret_token';
+
+// Read Resend API Key (prioritize environment variable, fallback to resend_config.txt)
+let resendApiKey = process.env.RESEND_API_KEY || '';
+if (!resendApiKey) {
+  try {
+    const configPath = path.join(__dirname, 'resend_config.txt');
+    if (fs.existsSync(configPath)) {
+      resendApiKey = fs.readFileSync(configPath, 'utf8').trim();
+      console.log('Loaded Resend API Key from resend_config.txt:', resendApiKey ? 'Yes' : 'Empty');
+    } else {
+      console.log('RESEND_API_KEY environment variable not set, and resend_config.txt not found. Resend will run in Mock Mode.');
+    }
+  } catch (err) {
+    console.error('Error reading resend_config.txt:', err);
   }
-} catch (err) {
-  console.error('Error reading resend_config.txt:', err);
+} else {
+  console.log('Loaded Resend API Key from environment variable.');
 }
 
 // Generate Email HTML Templates
@@ -346,7 +356,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // Serve Admin Panel with authentication protection
 app.get('/admin', (req, res) => {
-  if (req.cookies.admin_session === 'authenticated_secret_token') {
+  if (req.cookies.admin_session === ADMIN_SESSION_TOKEN) {
     res.sendFile(path.join(__dirname, 'public', 'admin.html'));
   } else {
     res.sendFile(path.join(__dirname, 'public', 'login.html'));
@@ -356,9 +366,8 @@ app.get('/admin', (req, res) => {
 // Admin Login API
 app.post('/api/admin/login', (req, res) => {
   const { username, password } = req.body;
-  // Account details: admin / anvoai247
-  if (username === 'admin' && password === 'anvoai247') {
-    res.cookie('admin_session', 'authenticated_secret_token', {
+  if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
+    res.cookie('admin_session', ADMIN_SESSION_TOKEN, {
       path: '/',
       httpOnly: true,
       maxAge: 86400 * 1000, // 24 hours
@@ -396,7 +405,7 @@ const requireAdminAuth = (req, res, next) => {
   }
   
   // Check cookie authentication
-  if (req.cookies.admin_session === 'authenticated_secret_token') {
+  if (req.cookies.admin_session === ADMIN_SESSION_TOKEN) {
     next();
   } else {
     res.status(401).json({ error: 'Unauthorized: Bạn cần đăng nhập admin' });
@@ -453,6 +462,21 @@ app.get('/api/customers', (req, res) => {
 
 app.post('/api/customers', (req, res) => {
   const { name, phone, zalo, email } = req.body;
+  
+  // Server-side input validation
+  const phoneRegex = /^(0[3|5|7|8|9][0-9]{8})$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+  if (!name || !name.trim()) {
+    return res.status(400).json({ error: 'Họ và tên không được để trống' });
+  }
+  if (!phone || !phoneRegex.test(phone.trim())) {
+    return res.status(400).json({ error: 'Số điện thoại không hợp lệ (yêu cầu số di động Việt Nam gồm 10 chữ số)' });
+  }
+  if (!email || !emailRegex.test(email.trim())) {
+    return res.status(400).json({ error: 'Địa chỉ email không hợp lệ (ví dụ: name@example.com)' });
+  }
+  
   const created_at = new Date().toISOString();
   const sql = 'INSERT INTO customers (name, phone, zalo, email, created_at) VALUES (?, ?, ?, ?, ?)';
   db.run(sql, [name, phone, zalo, email, created_at], function(err) {
@@ -552,6 +576,27 @@ function subtractInventory(productName, quantityToSubtract) {
 // Create new order (Frontend checkout or Admin manual)
 app.post('/api/orders', (req, res) => {
   const { customer_name, customer_phone, customer_email, product_name, amount, status = 'pending' } = req.body;
+  
+  // Server-side input validation
+  const phoneRegex = /^(0[3|5|7|8|9][0-9]{8})$/;
+  const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  
+  if (!customer_name || !customer_name.trim()) {
+    return res.status(400).json({ error: 'Họ và tên không được để trống' });
+  }
+  if (!customer_phone || !phoneRegex.test(customer_phone.trim())) {
+    return res.status(400).json({ error: 'Số điện thoại không hợp lệ (yêu cầu số di động Việt Nam gồm 10 chữ số)' });
+  }
+  if (!customer_email || !emailRegex.test(customer_email.trim())) {
+    return res.status(400).json({ error: 'Địa chỉ email không hợp lệ (ví dụ: name@example.com)' });
+  }
+  if (!product_name || !product_name.trim()) {
+    return res.status(400).json({ error: 'Tên sản phẩm không được để trống' });
+  }
+  if (!amount) {
+    return res.status(400).json({ error: 'Số tiền không được để trống' });
+  }
+  
   const created_at = new Date().toISOString();
   
   // 1. Insert order first to get ID
@@ -581,7 +626,7 @@ app.post('/api/orders', (req, res) => {
       }
 
       // Trigger email if the order is success OR if the order was created by the admin
-      const isAdmin = req.cookies.admin_session === 'authenticated_secret_token';
+      const isAdmin = req.cookies.admin_session === ADMIN_SESSION_TOKEN;
       if (status === 'success' || isAdmin) {
         triggerOrderSuccessEmail(orderId);
       }
